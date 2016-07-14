@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.mbr.mbrMapper">
+	<resultMap type="java.util.Map" id="mbrMap">
+		<result property="mbrId" column="MBR_ID" />
+		<result property="personId" column="PERSON_ID" />
+		<result property="groupId" column="GROUP_ID" />
+		<result property="crmMbrId" column="CRM_MBR_ID" />
+		<result property="crmCustId" column="CRM_CUST_ID" />
+		<result property="mbrCd" column="MBR_CD" />
+		<result property="defaultMbrshipCd" column="DEFAULT_MBRSHIP_CD" />
+		<result property="crmMbrshipCd" column="CRM_MBRSHIP_CD" />
+		<result property="mbrNetName" column="MBR_NET_NAME" />
+		<result property="mbrTyp" column="MBR_TYP" />
+		<result property="rgstWay" column="RGST_WAY" />
+		<result property="activate" column="ACTIVATE" />
+		<result property="attribute" column="ATTRIBUTE" />
+		<result property="stus" column="STUS" />
+		<result property="activeTyp" column="ACTIVE_TYP" />
+		<result property="mbrLevel" column="MBR_LEVEL" />
+		<result property="mbrLowestLevel" column="MBR_LOWEST_LEVEL" />
+		<result property="createTime" column="CREATE_TIM" />
+		<result property="createBy" column="CREATE_BY" />
+		<result property="updateTime" column="UPDATE_TIM" />
+		<result property="updateBy" column="UPDATE_BY" />
+		<result property="flag" column="FLAG" />
+	</resultMap>
+
+	<resultMap type="java.util.Map" id="registerMap">
+		<result column="register_id" property="registerId" />
+		<result column="mbr_id" property="mbrId" />
+		<result column="login_nick" property="loginNick" />
+		<result column="login_name" property="loginName" />
+		<result column="login_pwd" property="loginPwd" />
+		<result column="login_typ" property="loginType" />
+		<result column="login_subtyp" property="loginSubType" />
+		<result column="req_url" property="reqUrl" />
+		<result column="req_ip" property="reqIp" />
+		<result column="create_tim" property="createTime" />
+		<result column="create_by" property="createBy" />
+		<result column="update_tim" property="updateTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="stus" property="stus" />
+	</resultMap>
+
+	<insert id="mbrCreate" parameterType="java.util.Map">
+		insert into t_mbr
+		(mbr_id,
+		person_id, group_id, crm_mbr_id, crm_cust_id, mbr_cd,
+		default_mbrship_cd, crm_mbrship_cd, mbr_net_name, mbr_typ, rgst_way,
+		activate, attribute, stus, active_typ, mbr_level, mbr_lowest_level,
+		create_tim, create_by, update_tim, update_by
+		) values (
+		'${mbrId}','${personId}','${groupId}','${crmMbrId}',
+		'${crmCustId}','${mbrCd}','${defaultMbrshipCd}','${crmMbrshipCd}','${mbrNetName}','${mbrTyp}',
+		null,'${activate}','${attribute}','Active','${activeTyp}','${mbrLevel}','${mbrLowestLevel}',SYSDATE,'${createBy}',SYSDATE,'${updateBy}'
+		)
+	</insert>
+
+	<select id="queryMbrByMbrshipCd" parameterType="java.util.Map"
+		resultMap="mbrMap">
+		SELECT
+		T.mbr_id,
+		T.person_id,
+		T.group_id,
+		T.crm_mbr_id,
+		T.crm_cust_id,
+		T.mbr_cd,
+		T.default_mbrship_cd,
+		T.crm_mbrship_cd,
+		T.mbr_net_name,
+		T.mbr_typ,
+		T.rgst_way,
+		T.activate,
+		T.attribute,
+		T.stus,
+		T.active_typ,
+		T.mbr_level,
+		T.mbr_lowest_level,
+		T.create_tim,
+		T.create_by,
+		T.update_tim,
+		T.update_by
+		FROM
+		T_MBR t ,T_MBR_MBRSHIP MM
+		WHERE
+		T.MBR_ID =
+		MM.MBR_ID
+		AND
+		MM.OLD_MBRSHIP_CD = #{mbrshipCd,jdbcType=VARCHAR}
+	</select>
+
+	<select id="queryMbrByMbrId" parameterType="java.util.Map"
+		resultMap="mbrMap">
+		SELECT * FROM T_MBR
+		WHERE 1=1
+		<if test="mbrId != null">
+			and MBR_ID = #{mbrId}
+		</if>
+	</select>
+
+	<select id="getSeq12" resultType="java.lang.Long">
+		SELECT SEQ_MBR_CD.NEXTVAL FROM
+		DUAL
+	</select>
+
+	<select id="getMbrId" resultType="java.lang.Long">
+		SELECT SEQ_MBR_CD.NEXTVAL FROM
+		DUAL
+	</select>
+
+	<select id="validateLogin" parameterType="map" resultMap="registerMap">
+		SELECT
+		r.MBR_ID,t.mbr_cd as "mbrCd"
+		FROM T_MBR_REGISTER r left join t_mbr t on
+		r.mbr_id=t.mbr_id
+		WHERE
+		r.LOGIN_NAME=#{loginName}
+		AND
+		r.LOGIN_PWD=#{loginPwd}
+		AND r.STUS=1
+		AND r.LOGIN_SUBTYP=#{loginSubType}
+	</select>
+
+	<update id="updateMbrInfo" parameterType="map">
+		update t_mbr
+		<set>
+			<if test="mbrNetName != null">
+				MBR_NET_NAME = #{mbrNetName}
+			</if>
+		</set>
+		where mbr_Id=#{mbrId}
+	</update>
+
+	<insert id="mbrUpdateLogCreate" parameterType="map">
+		insert into
+		T_MBR_UPDATE_LOG(id, mbr_id, mbrship_cd, update_time, update_type,
+		status)
+		values
+		(seq_mbr_update_log.nextval,#{mbrId},'',sysdate,'02','0')
+	</insert>
+	
+	<update id="updateMbrAttribute" parameterType="map">
+		update t_mbr
+		<set>
+			<if test="attribute != null">
+				ATTRIBUTE = #{attribute}
+			</if>
+		</set>
+		where mbr_Id=#{mbrId}
+	</update>
+
+</mapper> 

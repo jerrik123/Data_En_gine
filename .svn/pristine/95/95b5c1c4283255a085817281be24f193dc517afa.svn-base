@@ -1,0 +1,62 @@
+package com.mangocity.de.mbr.datafactory.point;
+
+import static com.mangocity.ce.util.CommonUtils.isBlankIncludeNull;
+import static com.mangocity.ce.util.CommonUtils.isEmpty;
+import static com.mangocity.ce.util.CommonUtils.objectToLong;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.BusinessException;
+import com.mangocity.ce.exception.DatabaseException;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.exception.IllegalParamException;
+import com.mangocity.ce.exception.SystemException;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.ce.util.New;
+import com.mangocity.ce.book.ErrorBook;
+import com.mangocity.ce.book.ErrorConstant;
+import com.mangocity.ce.book.ConstantArgs;
+import com.mangocity.de.mbr.book.SqlMapper;
+import com.mangocity.de.mbr.book.SqlMapper.TransacOperation;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+/**
+ * @ClassName: PointExchangeInFactory
+ * @Description: (积分互换-万里通积分转换为芒果网积分-积分转入)
+ * @author YangJie
+ * @date 2016年4月1日 下午6:19:22
+ */
+public class PointExchangeInFactory {
+	private static final Logger log = Logger.getLogger(PointExchangeInFactory.class);
+
+	/**
+	 * 芒果网用户验证接口
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public Map<String,Object> partnersUserValidate(EngineBean pb) throws ExceptionAbstract {
+		log.info("PointExchangeInFactory partnersUserValidate begin()...appId: " + pb.getAppId() + " ,params: "
+				+ pb.getHeadMap());
+		Long mbrId = objectToLong(SqlUtil.getInstance().selectOneString("queryMbrIdByOldMbrshipCd", pb.getHeadMap()), -1L);
+		log.info("queryMbrIdByOldMbrshipCd mbrId: " + mbrId);
+		//构造返回数据
+		Map<String,Object> resultMap = New.map();
+		if(-1L == mbrId){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_NOT_EXIST_30001, "用户信息验证不通过");
+		}else{
+			resultMap.put("validateSucc", true);
+		}
+		return resultMap;
+	}
+}

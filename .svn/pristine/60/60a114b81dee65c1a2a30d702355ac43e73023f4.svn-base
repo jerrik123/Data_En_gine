@@ -1,0 +1,71 @@
+package com.mangocity.de.mbr.datafactory;
+
+import java.math.BigDecimal;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.BusinessException;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.exception.IllegalParamException;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.de.mbr.book.ErrorConstant;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+/**
+ * 积分通用服务
+ * @author mbr.yangjie
+ */
+public class PointCommFactory {
+	private static final Logger log = Logger.getLogger(PointCommFactory.class);
+	/**
+	 * 查询芒果网本地积分
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public Map<String,Object> queryLocalEnabledPoint(EngineBean pb) throws ExceptionAbstract {
+		log.info("PointCommFactory queryLocalEnabledPoint begin()...param: " + pb.getHeadMap());
+		//step1: 根据mbrId查询积分账户信息 并校验账户是否有效
+		Map<String,Object> pointAccountMap = SqlUtil.getInstance().selectOne("queryPointAccountByMbrId", pb.getHeadMap());
+		validPointAccount(pointAccountMap);
+		
+		//step2: 根据积分账户id查询积分余额总额信息 如果积分总额是有效数字,则把积分总额作为剩余积分总数返回给客户端
+		pointAccountMap.put("accoutId", pointAccountMap.get("pointAccountId"));
+		Long pointBalance = CommonUtils.objectToLong(SqlUtil.getInstance().selectOneString("queryPointBalanceByAccountId", pointAccountMap), -1L);
+		if(-1L != pointBalance){
+			pointAccountMap.put("pointTotal", pointBalance);
+		}
+		log.info("accoutId: " + pointAccountMap.get("accoutId") + " ,pointTotal: " + pointAccountMap.get("pointTotal"));
+		return pointAccountMap;
+	}
+	
+	/**
+	 * 查询集团用户积分
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public Map<String,Object> queryCrmEnabledPoint(EngineBean pb) throws ExceptionAbstract {
+		log.info("PointCommFactory queryCrmEnabledPoint begin()...param: " + pb.getHeadMap());
+		return null;
+	}
+	
+	private void validPointAccount(Map<String, Object> pointAccountMap) throws IllegalParamException, BusinessException {
+		log.info("积分账户信息:" + pointAccountMap);
+		AssertUtils.assertNull(pointAccountMap, "不存在该会员id对应的积分账户信息");
+		int stus = ((BigDecimal)pointAccountMap.get("stus")).intValue();
+		if(stus == 2){
+			log.info(pointAccountMap + "积分账户已冻结");
+			throw new BusinessException(this, ErrorConstant.Point.ERROR_POINT_ACCOUNT_FREEZE_20005, "积分账户已冻结");
+		}else if(stus == 3){
+			log.info(pointAccountMap +"积分账户已注销");
+			throw new BusinessException(this, ErrorConstant.Point.ERROR_POINT_ACCOUNT_Logout_20006, "积分账户已注销");
+		}else if(stus == 0){
+			log.info(pointAccountMap + "积分账户未激活");
+			throw new BusinessException(this, ErrorConstant.Point.ERROR_POINT_ACCOUNT_NOT_ACCTIVATED_20007, "积分账户未激活");
+		}
+	}
+}

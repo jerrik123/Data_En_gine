@@ -1,0 +1,67 @@
+package com.mangocity.de.mbr.sqlmapper.register;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
+
+public interface registerMapper {
+	/**
+	 * 
+	* @Title: registerCreate 
+	* @Description: TODO(插入Register信息) 
+	* @param  headMap  参数说明 
+	* @return int    返回类型
+	 */
+	public int registerCreate(Map headMap);
+	
+	/**
+	 * 
+	* @Title: updateRegister 
+	* @Description: 修改注册表信息
+	* @param  headMap  参数说明 
+	* @return int    返回类型
+	 */
+	public int updateRegister(Map headMap);
+	
+	/**
+	 * queryMbrIdByLoginNameAndPassword
+	 * @Description: (根据登陆名和密码查询mbrId)
+	 * @param  headMap 参数说明
+	 * @return Map
+	 */
+	public Map queryMbrIdByLoginNameAndPassword(Map headMap);
+	
+	/**
+	 * queryRegisterByLoginNameAndPassword
+	 * @Description: (根据登陆名和密码查询注册信息,任何状态都显示)
+	 * @param  headMap 参数说明
+	 * @return Map
+	 */
+	public List<Map> queryRegisterByLoginNameAndPassword(Map headMap);
+	
+	/**
+	 * queryMbrIdByLoginName
+	 * @Description: (根据登陆名查询mbrId)
+	 * @param  headMap 参数说明
+	 * @return Map
+	 */
+	public Map queryMbrIdByLoginName(Map headMap);
+	
+	/**
+	 * 重置密码
+	 * @param headMap
+	 * @return
+	 */
+	public int resetPassword(Map headMap);
+	
+	/**
+	* @Title: validateUniqueMbrByLoginName 
+	* @Description: (验证注册手机或者邮箱是否已经注册) 
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long validateUniqueMbrByLoginName(Map headMap);
+	
+}

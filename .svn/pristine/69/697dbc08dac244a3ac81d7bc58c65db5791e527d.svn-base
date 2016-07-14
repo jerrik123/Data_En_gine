@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.PointSchemeMapper">
+	<resultMap type="java.util.Map" id="pointSchemeMap">
+		<result property="schemeId" column="BUSINESS_SCHEME_ID"/>
+		<result property="level" column="MBRLEVEL"/>
+		<result property="pointModulus" column="POINTS_MODULUS"/>
+		<result property="businessScenes" column="BUSINESS_SCENES"/>
+		<result property="scenesDesc" column="SCENES_DESC"/>
+	</resultMap>
+	
+	
+	<select id="queryAllPointSchemes" parameterType="map" resultMap="pointSchemeMap">
+		SELECT BUSINESS_SCHEME_ID,
+			MBRLEVEL,
+			POINTS_MODULUS,
+			BUSINESS_SCENES,
+			SCENES_DESC
+			FROM T_MBR_BUSINESS_SCHEME
+	</select>
+	
+	<insert id="insertScheme" parameterType="map">
+		INSERT INTO T_MBR_BUSINESS_SCHEME(BUSINESS_SCHEME_ID,POINTS_MODULUS,BUSINESS_SCENES,SCENES_DESC)
+			VALUES (seq_mbr_business_scheme.nextval,
+							#{pointModulus},
+							#{businessScenes},
+							#{scenesDesc}
+							)
+	</insert>
+	
+	<update id="updateScheme" parameterType="map">
+		UPDATE T_MBR_BUSINESS_SCHEME SET POINTS_MODULUS = #{pointModulus}, SCENES_DESC =#{scenesDesc}  WHERE BUSINESS_SCHEME_ID=#{schemeId}
+	</update>
+	
+</mapper> 

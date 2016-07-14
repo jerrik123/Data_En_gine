@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.mbrShipCategoryMapper">
+	<resultMap type="java.util.Map" id="mbrshipCategoryMap">
+		<result property="mbrshipCategoryId" column="MBRSHIP_CATEGORY_ID" />
+		<result property="ctsMbrshipCategoryCd" column="CTS_MBRSHIP_CATEGORY_CD" />
+		<result property="mbrshipCategoryCd" column="CATEGORY_CD" />
+		<result property="categoryName" column="CATEGORY_NAME" />
+		<result property="channelNo" column="CHANNEL_NO" />
+		<result property="categoryTyp" column="CATEGORY_TYP" />
+		<result property="remark" column="REMARK" />
+		<result property="projectHead" column="PROJECT_HEAD" />
+		<result property="isPoint" column="IS_POINT" />
+		<result property="isSpecMerchant" column="IS_SPEC_MERCHANT" />
+		<result property="isUpgrade" column="IS_UPGRADE" />
+		<result property="isActivate" column="IS_ACTIVATE" />
+		<result property="isEncryptCardNo" column="IS_ENCRYPT_CARD_NO" />
+		<result property="aliasCardType" column="ALIAS_CARD_TYP" />
+		<result property="mbrshipTypLevel" column="MBRSHIP_TYP_LEVEL" />
+		<result property="mbrshipCategoryLowestLevel" column="MBRSHIP_CATEGORY_LOWEST_LEVEL" />
+		<result property="isSendPromotionCard" column="IS_SEND_PROMOTION_CARD" />
+		<result property="promotionCardTyp" column="PROMOTION_CARD_TYP" />
+		<result property="isCheckAliasCardNo" column="IS_CHECK_ALIAS_CARD_NO" />
+		<result property="isFillPrompt" column="IS_FILL_PROMPT" />
+		<result property="promptMsg" column="PROMPT_MSG" />
+		<result property="merchantTyp" column="MERCHANT_TYP" />
+		<result property="stus" column="STUS" />
+		<result property="showModule" column="SHOW_MODULE" />
+		<result property="createTime" column="CREATE_TIM" />
+		<result property="createBy" column="CREATE_BY" />
+		<result property="updateTime" column="UPDATE_TIM" />
+		<result property="updateBy" column="UPDATE_BY" />
+		<result property="startTime" column="START_TIM" />
+		<result property="endTime" column="END_TIM" />
+		<result property="isAccount" column="IS_ACCOUNT" />
+		<result property="isSendMsgRgst" column="IS_SEND_MSG_RGST" />
+		<result property="isSendEmailRgst" column="IS_SEND_EMAIL_RGST" />
+		<result property="isSendMsgUpdate" column="IS_SEND_MSG_UPDATE" />
+		<result property="isSendEmailUpdate" column="IS_SEND_EMAIL_UPDATE" />
+		<result property="isSendMsgCoupon" column="IS_SEND_MSG_COUPON" />
+		<result property="isSendEmailCoupon" column="IS_SEND_EMAIL_COUPON" />
+		<result property="isCtsMbr" column="IS_CTS_MBR" />
+	</resultMap>
+
+	<select id="queryMbrshipCategoryByCategoryId" parameterType="java.util.Map"
+		resultMap="mbrshipCategoryMap">
+		SELECT
+		MBRSHIP_CATEGORY_ID,
+		CTS_MBRSHIP_CATEGORY_CD,
+		CATEGORY_CD,
+		CATEGORY_NAME,
+		CHANNEL_NO,
+		CATEGORY_TYP,
+		REMARK,
+		PROJECT_HEAD,
+		IS_POINT,
+		IS_SPEC_MERCHANT,
+		IS_UPGRADE,
+		IS_ACTIVATE,
+		IS_ENCRYPT_CARD_NO,
+		ALIAS_CARD_TYP,
+		MBRSHIP_TYP_LEVEL,
+		MBRSHIP_CATEGORY_LOWEST_LEVEL,
+		IS_SEND_PROMOTION_CARD,
+		PROMOTION_CARD_TYP,
+		IS_CHECK_ALIAS_CARD_NO,
+		IS_FILL_PROMPT,
+		PROMPT_MSG,
+		MERCHANT_TYP,
+		STUS,
+		SHOW_MODULE,
+		CREATE_TIM,
+		CREATE_BY,
+		UPDATE_TIM,
+		UPDATE_BY,
+		START_TIM,
+		END_TIM,
+		IS_ACCOUNT,
+		IS_SEND_MSG_RGST,
+		IS_SEND_EMAIL_RGST,
+		IS_SEND_MSG_UPDATE,
+		IS_SEND_EMAIL_UPDATE,
+		IS_SEND_MSG_COUPON,
+		IS_SEND_EMAIL_COUPON,
+		IS_CTS_MBR
+		FROM
+		T_MBR_MBRSHIP_CATEGORY
+		WHERE MBRSHIP_CATEGORY_ID=#{mbrshipCategoryId}
+	</select>
+
+	<select id="queryMbrshipCategoryByCategoryCd" parameterType="java.util.Map"
+		resultMap="mbrshipCategoryMap">
+		SELECT
+		MBRSHIP_CATEGORY_ID,
+		CTS_MBRSHIP_CATEGORY_CD,
+		CATEGORY_CD,
+		CATEGORY_NAME,
+		CHANNEL_NO,
+		CATEGORY_TYP,
+		REMARK,
+		PROJECT_HEAD,
+		IS_POINT,
+		IS_SPEC_MERCHANT,
+		IS_UPGRADE,
+		IS_ACTIVATE,
+		IS_ENCRYPT_CARD_NO,
+		ALIAS_CARD_TYP,
+		MBRSHIP_TYP_LEVEL,
+		MBRSHIP_CATEGORY_LOWEST_LEVEL,
+		IS_SEND_PROMOTION_CARD,
+		PROMOTION_CARD_TYP,
+		IS_CHECK_ALIAS_CARD_NO,
+		IS_FILL_PROMPT,
+		PROMPT_MSG,
+		MERCHANT_TYP,
+		STUS,
+		SHOW_MODULE,
+		CREATE_TIM,
+		CREATE_BY,
+		UPDATE_TIM,
+		UPDATE_BY,
+		START_TIM,
+		END_TIM,
+		IS_ACCOUNT,
+		IS_SEND_MSG_RGST,
+		IS_SEND_EMAIL_RGST,
+		IS_SEND_MSG_UPDATE,
+		IS_SEND_EMAIL_UPDATE,
+		IS_SEND_MSG_COUPON,
+		IS_SEND_EMAIL_COUPON,
+		IS_CTS_MBR
+		FROM
+		T_MBR_MBRSHIP_CATEGORY
+		WHERE CATEGORY_CD=#{categoryCd}
+	</select>
+</mapper> 

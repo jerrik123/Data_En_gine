@@ -1,0 +1,90 @@
+[Error] 09:05:49,222 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find parameter map java.util.Map
+### Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find parameter map java.util.Map,errorTyp: OTHER]
+  [Error] 09:06:28,596 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find parameter map java.util.Map
+### Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find parameter map java.util.Map,errorTyp: OTHER]
+  [Error] 09:11:37,241 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find parameter map java.util.Map
+### Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find parameter map java.util.Map,errorTyp: OTHER]
+  [Error] 09:56:57,887 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find parameter map java.util.Map
+### Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find parameter map java.util.Map,errorTyp: OTHER]
+  [Error] 10:14:52,218 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #7 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.bindThirdpartyAccount-Inline
+### The error occurred while setting parameters
+### SQL: insert into   t_mbr_ts_int_user(id,csn,type,login_code,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)   values(?,?,11,?,?,?,?,?,?,?,1,?)
+### Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #7 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111,errorTyp: OTHER]
+  [Error] 10:20:07,540 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #7 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.bindThirdpartyAccount-Inline
+### The error occurred while setting parameters
+### SQL: insert into   t_mbr_ts_int_user(id,csn,type,login_code,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)   values(?,?,11,?,?,?,?,?,?,?,1,?)
+### Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #7 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111,errorTyp: OTHER]
+  [Error] 10:20:46,509 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #7 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.bindThirdpartyAccount-Inline
+### The error occurred while setting parameters
+### SQL: insert into   t_mbr_ts_int_user(id,csn,type,login_code,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)   values(?,?,11,?,?,?,?,?,?,?,1,?)
+### Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #7 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111,errorTyp: OTHER]
+  [Error] 10:21:23,612 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #7 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.bindThirdpartyAccount-Inline
+### The error occurred while setting parameters
+### SQL: insert into   t_mbr_ts_int_user(id,csn,type,login_code,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)   values(?,?,11,?,?,?,?,?,?,1,?)
+### Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #7 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111,errorTyp: OTHER]
+  [Error] 10:23:43,381 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #8 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.bindThirdpartyAccount-Inline
+### The error occurred while setting parameters
+### SQL: insert into   t_mbr_ts_int_user(id,csn,type,login_code,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)   values(?,?,11,?,?,?,?,?,?,?,1,?)
+### Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #8 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111,errorTyp: OTHER]
+  [Error] 10:27:35,086 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #6 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.bindThirdpartyAccount-Inline
+### The error occurred while setting parameters
+### SQL: insert into   t_mbr_ts_int_user(id,csn,type,login_code,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)   values(?,?,11,?,?,?,?,?,?,?,1,?)
+### Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #6 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111,errorTyp: OTHER]
+  [Error] 10:47:00,154 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid-Inline
+### The error occurred while setting parameters
+### SQL: select id,csn,type,login_code,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY   from t_mbr_ts_int_user   where login_code=?   and status=1
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 10:49:54,957 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid-Inline
+### The error occurred while setting parameters
+### SQL: select id,csn,type,login_code,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY   from t_mbr_ts_int_user   where login_code=?   and status=1
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 10:50:55,443 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid-Inline
+### The error occurred while setting parameters
+### SQL: select id,csn,type,login_code,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY   from t_mbr_ts_int_user   where login_code=?   and status=1
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 10:52:28,811 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid-Inline
+### The error occurred while setting parameters
+### SQL: select *   from t_mbr_ts_int_user   where login_code=?   and status=1
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 10:53:12,215 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid-Inline
+### The error occurred while setting parameters
+### SQL: select *   from t_mbr_ts_int_user   where login_code=?   and status=1
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.queryTsIntUserByOpenid'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  

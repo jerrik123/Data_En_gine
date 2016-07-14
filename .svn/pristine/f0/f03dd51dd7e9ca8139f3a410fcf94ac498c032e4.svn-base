@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.cash.cashMapper">
+	<resultMap type="java.util.Map" id="cashAccountMap">
+		<result property="cashAccountId" column="cash_account_id"/>
+		<result property="mbrId" column="mbr_id"/>
+		<result property="cashTotal" column="cash_total"/>
+		<result property="accountCreateDate" column="acct_create_date"/>
+		<result property="accountExpiryDate" column="acct_expiry_date"/>
+		<result property="status" column="status"/>
+		<result property="version" column="version"/>
+		<result property="createTime" column="create_time"/>
+		<result property="createBy" column="create_by"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="updateBy" column="update_by"/>
+	</resultMap>
+	
+	<resultMap type="java.util.Map" id="cashAccountInComeMap">
+		<result property="cashAccountInDetailId" column="cash_account_in_detail_id"/>
+		<result property="mbrId" column="mbr_id"/>
+		<result property="cashAmount" column="cash_amount"/>
+		<result property="cashAccountId" column="cash_account_id"/>
+		<result property="mbrshipId" column="mbrship_id"/>
+		<result property="productName" column="product_name"/>
+		<result property="ordCd" column="ord_cd"/>
+		<result property="ordSrc" column="ord_src"/>
+		<result property="remark" column="remark"/>
+		<result property="opTyp" column="op_typ"/>
+		<result property="expiryTime" column="expiry_time"/>
+		<result property="status" column="status"/>
+		<result property="createTime" column="create_time"/>
+		<result property="createBy" column="create_by"/>
+		<result property="updateTime" column="update_time"/>
+		<result property="updateBy" column="update_by"/>
+		<result property="dealDate" column="dealdate"/>
+		<result property="dealAmount" column="dealamount"/>
+		<result property="surplus" column="surplus"/>
+		<result property="exchangeRateId" column="exchange_rate_id"/>
+	</resultMap>
+	
+	<resultMap type="java.util.Map" id="cashAccountOutComeMap">
+		<result property="createTime" column="createTime"/>
+		<result property="cashOutgoAmount" column="cashOutgoAmount"/>
+		<result property="bankType" column="bankType"/>
+		<result property="cardNo" column="cardNo"/>
+		<result property="authorizedName" column="authorizedName"/>
+		<result property="status" column="status"/>
+		<result property="cashOutType" column="cashOutType"/>
+	</resultMap>
+	
+	<insert id="cashAccountCreate" parameterType="java.util.Map">
+		INSERT INTO t_mbr_cash_account_sec
+			(CASH_ACCOUNT_ID,
+			MBR_ID,
+			CASH_TOTAL,
+			ACCT_CREATE_DATE,
+			ACCT_EXPIRY_DATE,
+			STATUS,
+			VERSION,
+			CREATE_TIME,
+			CREATE_BY,
+			UPDATE_TIME,
+			UPDATE_BY)
+			VALUES
+			('${cashAccountId}',
+			'${mbrId}',
+			'${cashTotal}',
+			'${acctCreateDate}',
+			'${acctExpiryDate}',
+			'${status}',
+			'${version}',
+			'${createTime}',
+			'${createBy}',
+			'${updateTime}',
+			'${updateBy}')
+	</insert>
+	
+	<select id="generateCashAccountId" resultType="java.lang.Long">
+			select seq_mbr_cash_account.nextval from dual
+	</select>
+	
+	<select id="queryCashAccountByMbrId" parameterType="map" resultMap="cashAccountMap">
+		select cash_account_id,
+			mbr_id,
+			cash_total,
+			acct_create_date,
+			acct_expiry_date,
+			status,
+			version,
+			create_time,
+			create_by,
+			update_time,
+			update_by
+			from t_mbr_cash_account_sec sa
+			where sa.mbr_id = #{mbrId} 
+	</select>
+	
+	<select id="queryCashAccountInComeByCondition" parameterType="map" resultMap="cashAccountInComeMap">
+		select cash_account_in_detail_id,
+			  mbr_id,
+			  cash_account_id,
+			  mbrship_id,
+			  cash_amount,
+			  product_name,
+			  ord_cd,
+			  ord_src,
+			  remark,
+			  op_typ,
+			  expiry_time,
+			  status,
+			  create_time,
+			  create_by,
+			  update_time,
+			  update_by,
+			  dealdate,
+			  dealamount,
+			  surplus,
+			  exchange_rate_id
+			  from
+			  t_mbr_cash_in_detail_sec
+			  where
+			  mbr_id=#{mbrId}
+			  <if test="beginTime != null">
+			  	and create_time>=to_date(#{beginTime},'YYYY-MM-DD')
+			  </if>
+			  <if test="endTime != null">
+			  	and to_date(#{endTime},'YYYY-MM-DD')&gt;create_time-1 
+			  </if>
+			  and status = 'EFFECTIVE'
+			  order by create_time
+	</select>
+	
+	<select id="queryCashAccountOutComeByCondition" parameterType="map" resultMap="cashAccountOutComeMap">
+		select
+			createTime,
+			cashOutgoAmount,
+			bankType, 
+			cardNo,
+			authorizedName,
+			status,
+			cashOutType from
+			((select
+			o.create_time as createTime,
+			o.cash_out_amount as cashOutgoAmount,
+			b.bank_type as bankType,
+			b.card_no as cardNo,
+			b.authorized_name as authorizedName,
+			o.status as status,
+			o.cash_out_type as cashOutType
+			from
+			T_MBR_CASH_OUT_DETAIL_SEC o, T_MBR_BANK_ACCOUNT_SEC b
+			where
+			o.mbr_id = #{mbrId}
+			and o.CASH_OUT_TYPE = 'TRANSFER_APPLY'
+			and o.status = 'EFFECTIVE'
+			and o.cash_trans_apply_num = b.cash_transfer_num			 
+			)
+			union all
+			(select
+			o.create_time as createTime,
+			o.cash_out_amount as cashOutgoAmount,
+			null as bankType,
+			null as cardNo,
+			null as authorizedName,
+			o.status as status,
+			o.cash_out_type as cashOutType
+			from
+			T_MBR_CASH_OUT_DETAIL_SEC o, T_MBR_CASH_TRANS_POINT_SEC p
+			where
+			o.mbr_id = #{mbrId}
+			and o.status = 'EFFECTIVE'
+			and o.CASH_OUT_TYPE = 'TRANSFER_POINT'
+			and o.cash_trans_apply_num = p.cash_transfer_num 
+			)
+			union all
+			(select
+			o.create_time as createTime,
+			o.cash_out_amount as cashOutgoAmount,
+			null as bankType,
+			null as cardNo,
+			null as authorizedName,
+			o.status as status,
+			o.cash_out_type as cashOutType
+			from
+			T_MBR_CASH_OUT_DETAIL_SEC o
+			where
+			o.mbr_id = #{mbrId}
+			and o.status = 'EFFECTIVE'
+			and o.CASH_OUT_TYPE = 'TRANSFER_VOUCHER'
+			)
+			union all
+			(select
+			o.create_time as createTime,
+			o.cash_out_amount as cashOutgoAmount,
+			null as bankType,
+			null as cardNo,
+			null as authorizedName,
+			o.status as status,
+			o.cash_out_type as cashOutType
+			from
+			T_MBR_CASH_OUT_DETAIL_SEC o
+			where
+			o.mbr_id = #{mbrId}
+			and o.status = 'EFFECTIVE'
+			and o.CASH_OUT_TYPE = 'ADJUSTMENT'
+			)
+			)
+			where 1=1
+			<if test="beginTime != null">
+				and createTime>=to_date(#{beginTime},'YYYY-MM-DD')
+			</if>
+			<if test="endTime != null">
+				and to_date(#{endTime},'YYYY-MM-DD') &gt;createTime-1 
+			</if>
+			order by createTime
+	</select>
+	
+	<select id="queryCashAccountApplyRecordByCondition" resultMap="cashAccountOutComeMap">
+		 select createTime,cashOutgoAmount,bankType,cardNo,authorizedName,status,cashOutType
+			from(
+  			(
+  				select 
+       			apply.create_Time as createTime,
+      			apply.cash_transfer_amount as cashOutgoAmount,
+       			bank.bank_type as bankType,
+       			bank.card_no as cardNo,
+       			bank.authorized_name as authorizedName,
+       			'AUDIT_PENDING' as status,
+       			freeze.FREEZE_TYPE as cashOutType
+       			from T_MBR_CASH_FREEZE_APPLY_SEC freeze, 
+           		T_MBR_CASH_TRANS_APPLY_SEC apply,
+           		T_MBR_CASH_TRANS_AUDIT_SEC aud,
+           		T_MBR_BANK_ACCOUNT_SEC bank         
+          		where apply.mbr_id = #{mbrId}
+          			and aud.audit_status='AUDIT_PENDING'
+          			and freeze.FREEZE_TYPE = 'TRANSFER_APPLY_FREEZE'
+            		and freeze.CASH_TRANSFER_NUM = apply.cash_trans_apply_num
+            		and apply.cash_trans_apply_num = aud.cash_transfer_num           			
+            		and bank.cash_transfer_num = apply.cash_trans_apply_num
+            		)
+			union
+ 			(
+				select 
+       			apply.create_Time as createTime,
+       			apply.cash_transfer_amount as cashOutgoAmount,
+       			bank.bank_type as bankType,
+       			bank.card_no as cardNo,
+       			bank.authorized_name as authorizedName,
+       			'AUDIT_PASS' as status,
+       			freeze.FREEZE_TYPE as cashOutType
+       			from T_MBR_CASH_FREEZE_APPLY_SEC freeze, 
+           		T_MBR_CASH_TRANS_APPLY_SEC apply,
+           		T_MBR_CASH_TRANS_AUDIT_SEC aud,
+           		T_MBR_BANK_ACCOUNT_SEC bank ,
+           		T_MBR_CASH_POST_SEC POST          
+          		where apply.mbr_id = #{mbrId}
+          			and aud.audit_status ='AUDIT_PASS'
+          			and post.post_status !='POST_FAIL'
+          			and post.post_status !='POST_SUCCESS'
+          			and freeze.FREEZE_TYPE = 'TRANSFER_APPLY_FREEZE'
+           			and freeze.CASH_TRANSFER_NUM = apply.cash_trans_apply_num
+            		and apply.cash_trans_apply_num = aud.cash_transfer_num            		
+            		and bank.cash_transfer_num = apply.cash_trans_apply_num 
+            		AND POST.CASH_TRANS_APPLY_NUM = apply.cash_trans_apply_num
+            		)
+           union
+         (select apply.create_Time as createTime,
+                 apply.cash_transfer_amount as cashOutgoAmount,
+                 bank.bank_type as bankType,
+                 bank.card_no as cardNo,
+                 bank.authorized_name as authorizedName,
+                 'AUDIT_REJECT' as status,
+                 freeze.FREEZE_TYPE as cashOutType
+            from T_MBR_CASH_FREEZE_APPLY_SEC freeze,
+                 T_MBR_CASH_TRANS_APPLY_SEC apply,
+                 T_MBR_CASH_TRANS_AUDIT_SEC aud,
+                 T_MBR_BANK_ACCOUNT_SEC     bank
+          
+           where apply.mbr_id = #{mbrId}
+             and freeze.FREEZE_TYPE = 'TRANSFER_APPLY_FREEZE'
+             and aud.audit_status = 'AUDIT_REJECT'
+             and freeze.CASH_TRANSFER_NUM = apply.cash_trans_apply_num
+             and apply.cash_trans_apply_num = aud.cash_transfer_num                
+             and bank.cash_transfer_num = apply.cash_trans_apply_num) 
+             union
+         (
+          select apply.create_Time as createTime,
+                  apply.cash_transfer_amount as cashOutgoAmount,
+                  bank.bank_type as bankType,
+                  bank.card_no as cardNo,
+                  bank.authorized_name as authorizedName,
+                  'POST_FAIL' as status,
+                  freeze.FREEZE_TYPE as cashOutType
+            from T_MBR_CASH_FREEZE_APPLY_SEC freeze,
+                  T_MBR_CASH_TRANS_APPLY_SEC apply,
+                  T_MBR_CASH_TRANS_AUDIT_SEC aud,
+                  T_MBR_BANK_ACCOUNT_SEC     bank,
+                  T_MBR_CASH_POST_SEC        POST
+          
+           where apply.mbr_id = #{mbrId}
+             and freeze.FREEZE_TYPE = 'TRANSFER_APPLY_FREEZE'
+             and post.post_status = 'POST_FAIL'
+             and freeze.CASH_TRANSFER_NUM = apply.cash_trans_apply_num
+             and apply.cash_trans_apply_num = aud.cash_transfer_num
+             and bank.cash_transfer_num = apply.cash_trans_apply_num
+             AND POST.CASH_TRANS_APPLY_NUM = apply.cash_trans_apply_num)
+ 			)
+ 			where 1=1
+           <if test="beginTime != null">
+				and createTime>=to_date(#{beginTime},'YYYY-MM-DD')
+			</if>
+			<if test="endTime != null">
+				and to_date(#{endTime},'YYYY-MM-DD') &gt;createTime-1 
+			</if>
+			order by createTime
+	</select>
+	
+	<select id="queryAllCashAccountTrans" parameterType="map" resultType="map">
+	select * from 
+	(
+		select a.*,rownum as num 
+		from (
+		select 
+		       cashType as "cashType",
+		       createTime as "createTime",
+		       cashOutgoAmount as "cashOutgoAmount",
+		       bankType as "bankType",
+		       cardNo as "cardNo",
+		       authorizedName as "authorizedName",
+		       status as "status",
+		       cashOutType as "cashOutType",
+		       dealamount as "dealamount",
+		       product_name as "productName"
+		  from (
+		  (select 
+		                'OUTCOME'          as cashType,
+		                o.create_time     as createTime,
+		                o.cash_out_amount as cashOutgoAmount,
+		                b.bank_type       as bankType,
+		                b.card_no         as cardNo,
+		                b.authorized_name as authorizedName,
+		                o.status          as status,
+		                o.cash_out_type   as cashOutType,
+		                null as dealamount,
+		                null as product_name
+		           from T_MBR_CASH_OUT_DETAIL_SEC o, T_MBR_BANK_ACCOUNT_SEC b
+		          where o.mbr_id = #{mbrId}
+		            and o.CASH_OUT_TYPE = 'TRANSFER_APPLY'
+		            and o.status = 'EFFECTIVE'
+		            and o.cash_trans_apply_num = b.cash_transfer_num
+		) 
+		union all
+		 (
+		select  
+		'OUTCOME'          as cashType,
+		o.create_time     as createTime,
+		o.cash_out_amount as cashOutgoAmount,
+		null              as bankType,
+		null              as cardNo,
+		null              as authorizedName,
+		o.status          as status,
+		o.cash_out_type   as cashOutType,
+		null as dealamount,
+		null as product_name
+		from T_MBR_CASH_OUT_DETAIL_SEC o, T_MBR_CASH_TRANS_POINT_SEC p
+		where o.mbr_id = #{mbrId}
+		and o.status = 'EFFECTIVE'
+		and o.CASH_OUT_TYPE = 'TRANSFER_POINT'
+		and o.cash_trans_apply_num = p.cash_transfer_num
+		) 
+		union all
+		(
+		select 
+		'OUTCOME'          as cashType,
+		o.create_time     as createTime,
+		o.cash_out_amount as cashOutgoAmount,
+		null              as bankType,
+		null              as cardNo,
+		null              as authorizedName,
+		o.status          as status,
+		o.cash_out_type   as cashOutType,
+		null as dealamount,
+		null as product_name
+		from T_MBR_CASH_OUT_DETAIL_SEC o
+		where o.mbr_id = #{mbrId}
+		and o.status = 'EFFECTIVE'
+		and o.CASH_OUT_TYPE = 'TRANSFER_VOUCHER') 
+		union all
+		(select 'OUTCOME' as cashType,
+		o.create_time     as createTime,
+		o.cash_out_amount as cashOutgoAmount,
+		null              as bankType,
+		null              as cardNo,
+		null              as authorizedName,
+		o.status          as status,
+		o.cash_out_type   as cashOutType,
+		null as dealamount,
+		null as product_name
+		from T_MBR_CASH_OUT_DETAIL_SEC o
+		where o.mbr_id = #{mbrId}
+		and o.status = 'EFFECTIVE'
+		and o.CASH_OUT_TYPE = 'ADJUSTMENT') 
+		
+		union all
+		
+		(select 
+		'APPLYRECORD' as cashType,
+		apply.create_Time as createTime,
+		apply.cash_transfer_amount as cashOutgoAmount,
+		bank.bank_type as bankType,
+		bank.card_no as cardNo,
+		bank.authorized_name as authorizedName,
+		'AUDIT_PENDING' as status,
+		freeze.FREEZE_TYPE as cashOutType,
+		null as dealamount,
+		null as product_name
+		from T_MBR_CASH_FREEZE_APPLY_SEC freeze,
+		T_MBR_CASH_TRANS_APPLY_SEC  apply,
+		T_MBR_CASH_TRANS_AUDIT_SEC  aud,
+		T_MBR_BANK_ACCOUNT_SEC      bank
+		where apply.mbr_id = #{mbrId}
+		and aud.audit_status = 'AUDIT_PENDING'
+		and freeze.FREEZE_TYPE = 'TRANSFER_APPLY_FREEZE'
+		and freeze.CASH_TRANSFER_NUM = apply.cash_trans_apply_num
+		and apply.cash_trans_apply_num = aud.cash_transfer_num
+		and bank.cash_transfer_num = apply.cash_trans_apply_num) 
+		union
+		(select 'APPLYRECORD' as cashType,apply.create_Time as createTime,
+		apply.cash_transfer_amount as cashOutgoAmount,
+		bank.bank_type as bankType,
+		bank.card_no as cardNo,
+		bank.authorized_name as authorizedName,
+		'AUDIT_PASS' as status,
+		freeze.FREEZE_TYPE as cashOutType,
+		null as dealamount,
+		null as product_name
+		from T_MBR_CASH_FREEZE_APPLY_SEC freeze,
+		T_MBR_CASH_TRANS_APPLY_SEC  apply,
+		T_MBR_CASH_TRANS_AUDIT_SEC  aud,
+		T_MBR_BANK_ACCOUNT_SEC      bank,
+		T_MBR_CASH_POST_SEC         POST
+		where apply.mbr_id = #{mbrId}
+		and aud.audit_status = 'AUDIT_PASS'
+		and post.post_status != 'POST_FAIL'
+		and post.post_status != 'POST_SUCCESS'
+		and freeze.FREEZE_TYPE = 'TRANSFER_APPLY_FREEZE'
+		and freeze.CASH_TRANSFER_NUM = apply.cash_trans_apply_num
+		and apply.cash_trans_apply_num = aud.cash_transfer_num
+		and bank.cash_transfer_num = apply.cash_trans_apply_num
+		AND POST.CASH_TRANS_APPLY_NUM = apply.cash_trans_apply_num)
+		union
+		(select 'APPLYRECORD' as cashType,apply.create_Time as createTime,
+		apply.cash_transfer_amount as cashOutgoAmount,
+		bank.bank_type as bankType,
+		bank.card_no as cardNo,
+		bank.authorized_name as authorizedName,
+		'AUDIT_REJECT' as status,
+		freeze.FREEZE_TYPE as cashOutType,
+		null as dealamount,
+		null as product_name
+		from T_MBR_CASH_FREEZE_APPLY_SEC freeze,
+		T_MBR_CASH_TRANS_APPLY_SEC  apply,
+		T_MBR_CASH_TRANS_AUDIT_SEC  aud,
+		T_MBR_BANK_ACCOUNT_SEC      bank
+		         
+		where apply.mbr_id = #{mbrId}
+		and freeze.FREEZE_TYPE = 'TRANSFER_APPLY_FREEZE'
+		and aud.audit_status = 'AUDIT_REJECT'
+		and freeze.CASH_TRANSFER_NUM = apply.cash_trans_apply_num
+		and apply.cash_trans_apply_num = aud.cash_transfer_num
+		and bank.cash_transfer_num = apply.cash_trans_apply_num) 
+		union
+		(select 'APPLYRECORD' as cashType,apply.create_Time as createTime,
+		apply.cash_transfer_amount as cashOutgoAmount,
+		bank.bank_type as bankType,
+		bank.card_no as cardNo,
+		bank.authorized_name as authorizedName,
+		'POST_FAIL' as status,
+		freeze.FREEZE_TYPE as cashOutType,
+		null as dealamount,
+		null as product_name
+		from T_MBR_CASH_FREEZE_APPLY_SEC freeze,
+		T_MBR_CASH_TRANS_APPLY_SEC  apply,
+		T_MBR_CASH_TRANS_AUDIT_SEC  aud,
+		T_MBR_BANK_ACCOUNT_SEC      bank,
+		T_MBR_CASH_POST_SEC         POST
+		where apply.mbr_id = #{mbrId}
+		and freeze.FREEZE_TYPE = 'TRANSFER_APPLY_FREEZE'
+		and post.post_status = 'POST_FAIL'
+		and freeze.CASH_TRANSFER_NUM = apply.cash_trans_apply_num
+		and apply.cash_trans_apply_num = aud.cash_transfer_num
+		and bank.cash_transfer_num = apply.cash_trans_apply_num
+		AND POST.CASH_TRANS_APPLY_NUM = apply.cash_trans_apply_num)
+		union all
+		select 
+		'INCOME' as cashType,
+		create_time as createTime,
+		cash_amount as cashOutgoAmount,
+		null as bankType,
+		null as cardNo,
+		null as authorizedName,
+		null as status,
+		op_typ as cashOutType,
+		dealamount as dealamount,
+		product_name as product_name
+		from t_mbr_cash_in_detail_sec
+		where mbr_id = #{mbrId}
+		and status = 'EFFECTIVE'
+		)
+		   where 1 = 1
+		   <if test="beginDate !=null ">
+		   	 and createTime &gt;= to_date(#{beginDate}, 'YYYY-MM-DD')
+		   </if>
+		    <if test="endDate !=null ">
+		   	 and to_date(#{endDate}, 'YYYY-MM-DD') &gt; createTime - 1
+		   </if>
+		 order by createTime) a
+) WHERE  num &gt;#{startNum} AND #{endNum} &gt;= num
+	</select>
+</mapper> 

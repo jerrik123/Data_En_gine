@@ -1,0 +1,18 @@
+package com.mangocity.de.mbr.sqlmapper.person;
+
+import java.util.Map;
+
+/**
+ * 会员信息接口
+ * @author longshu.chen
+ *
+ */
+public interface personInfoMapper {
+	
+	/**
+	 * 获取用户信息
+	 * @param headMap
+	 * @return
+	 */
+	public Map<String,Object> getPersonInfo(Map<String, Object> headMap);
+}

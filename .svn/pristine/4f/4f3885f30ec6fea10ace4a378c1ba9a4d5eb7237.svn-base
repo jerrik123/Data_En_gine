@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.point.pointAwardMapper">
+	<resultMap type="java.util.Map" id="tempList">
+	</resultMap>
+	
+	<select id="getPointAwardId" resultType="string">
+		SELECT SEQ_MBR_POINT.Nextval FROM DUAL
+	</select>
+
+	<insert id="pointAwardCreate" parameterType="map">
+		INSERT INTO T_MBR_POINT_AWARD
+			(  
+		    	
+			   	POINT_AWARD_ID, 
+				SCHEME_ID, 
+				MERCHANT_ACC_NO, 
+				TERMINAL_NO, 
+				SALES_TRANS_CODE, 
+				SALES_TRANS_CHANNEL, 
+				SALES_BOOKING_NO, 
+				SALES_BOOKING_BY, 
+				SALES_TRANS_NO, 
+				SALES_TRANS_DATE_TIME, 
+				SALES_TRANS_AMOUNT, 
+				SALES_TRANS_FOREIGN_CURRENCY, 
+				SALES_TRANS_FOREIGN_AMOUNT, 
+				SALES_PRODUCT_CODE, 
+				SALES_LEAD_TIME, 
+				SALES_QTY, 
+				SALES_PROMOTION_CODE, 
+				SALES_PAYMENT_METHOD ,
+				CREATE_BY, 
+				CREATE_TIM,
+				UPDATE_TIM, 
+				UPDATE_BY, 
+				CRM_TRANS_TYPE
+			)
+			VALUES 
+			( 
+				#{pointTransactionId},
+				'${schemeId}',
+				'${merchantAccNo}',
+				'${terminalNo}',
+				'${salesTransCode}',
+				'${salesTransChannel}',
+				'${salesBookingNo}',
+				'${salesBookingBy}',
+				'${salesTransNO}',
+				sysdate,
+				'${salesTransAmount}',
+				'${salesTransForeignCurrency}',
+				'${salesTransForeignAmount}',
+				'${salesProductCode}',
+				'${salesLeadTime}',
+				'${salesQty}',
+				'${salesPromotionCode}',
+				'${salesPaymentMethod}',
+				'${createBy}',
+				 sysdate,
+				'${updateTime}',
+				'${updateBy}',
+				'${crmTransType}'
+			)
+	</insert>
+	
+	<select id="queryAwardCountByOrderNum" parameterType="map" resultType="long">
+		select count(1) from T_MBR_POINT_AWARD t where t.sales_booking_no=#{orderNum}
+	</select>
+</mapper> 

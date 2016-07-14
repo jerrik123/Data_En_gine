@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.mbrship.mbrShipMapper">
+   <resultMap type="java.util.Map" id="mbrshipMap">
+   </resultMap>
+
+	<insert id="mbrShipCreate" parameterType="java.util.Map">
+		insert into t_mbr_mbrship
+		(mbrship_id, mbr_id, mbrship_cd, old_mbrship_cd, mbrship_category_id,
+		mbrship_category_cd,
+		mbrship_hierarchy_id, project_code, available_dat, expiry_dat, create_tim, create_by,
+		update_tim, update_by
+		)values(
+		'${mbrshipId}', '${mbrId}', '${mbrshipCd}', '${oldMbrshipCd}',
+		'${mbrshipCategoryId}',
+		'${mbrshipCategoryCd}', '${mbrshipHierarchyId}', '${projectCode}', '${availableDat}',
+		'${expiryDat}',SYSDATE, '${createBy}', '${updateTime}', '${updateBy}'
+		)
+	</insert>
+
+	<select id="getMbrshipId" resultType="java.lang.Long">
+		SELECT SEQ_MBR_MBRSHIP.NEXTVAL FROM DUAL
+	</select>
+
+	<select id="queryMbrShipByMbrshipCd" parameterType="java.util.Map"
+		resultType="map">
+		select
+		register_src_id,MBRSHIP_ID,mbr_id,mbrship_cd,old_mbrship_cd,mbrship_category_id,
+		mbrship_category_cd,mbrship_hierarchy_id,available_dat,expiry_dat,agent_code,
+		create_tim,create_by,update_tim,update_by,STUS
+		from t_mbr_mbrship
+		where old_mbrship_cd = #{mbrshipCd}
+	</select>
+	
+	<select id="queryMbrShipListByMbrid"  parameterType="map" resultType="map">
+		select  MBRSHIP_ID,
+				MBR_ID,
+				MBRSHIP_CD,
+				OLD_MBRSHIP_CD,
+				MBRSHIP_CATEGORY_ID,
+				MBRSHIP_CATEGORY_CD,
+				MBRSHIP_HIERARCHY_ID,
+				PROJECT_CODE,
+				REGISTER_SRC_ID,
+				REGISTER_IP,
+				AGENT_CODE,
+				AVAILABLE_DAT,
+				to_char(EXPIRY_DAT,'yyyy-MM-dd') EXPIRY_DAT,
+				STUS,
+				CREATE_TIM,
+				CREATE_BY,
+				UPDATE_TIM,
+				UPDATE_BY
+	   from t_mbr_mbrship m where m.mbr_id=#{mbrId}
+	</select>
+	
+	<select id="queryMbrIdByOldMbrshipCd" parameterType="map"
+		resultType="long">
+		select MBR_ID
+		from T_MBR_MBRSHIP
+		where 1=1
+		<if test="oldMbrshipCd != null and oldMbrshipCd !='' ">
+			and OLD_MBRSHIP_CD = #{oldMbrshipCd}
+		</if>
+	</select>
+
+</mapper> 

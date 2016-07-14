@@ -1,0 +1,96 @@
+[Error] 16:22:51,485 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #2 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.bindThirdpartyAccount-Inline
+### The error occurred while setting parameters
+### SQL: insert into   t_mbr_ts_int_user(ID,CSN,TYPE,LOGIN_CODE,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)   values(?,   ?,   11,   ?,   ?,   ?,   ?,   ?,   ?,   ?,   1,   ?)
+### Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #2 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111,errorTyp: OTHER]
+  [Error] 16:23:47,704 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #3 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.bindThirdpartyAccount-Inline
+### The error occurred while setting parameters
+### SQL: insert into   t_mbr_ts_int_user(ID,CSN,TYPE,LOGIN_CODE,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)   values(?,   ?,   11,   ?,   ?,   ?,   ?,   ?,   ?,   ?,   1,   ?)
+### Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #3 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111,errorTyp: OTHER]
+  [Error] 16:24:20,794 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error updating database.  Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #3 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111
+### The error may exist in com/mangocity/de/mbr/sqlmapper/ThirdpartyAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.ThirdpartyAccountMapper.bindThirdpartyAccount-Inline
+### The error occurred while setting parameters
+### SQL: insert into   t_mbr_ts_int_user(ID,CSN,TYPE,LOGIN_CODE,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)   values(?,   ?,   '11',   ?,   ?,   ?,   ?,   ?,   ?,   ?,   1,   ?)
+### Cause: org.apache.ibatis.type.TypeException: Error setting null for parameter #3 with JdbcType OTHER . Try setting a different JdbcType for this parameter or a different jdbcTypeForNull configuration property. Cause: java.sql.SQLException: 无效的列类型: 1111,errorTyp: OTHER]
+  [Error] 16:43:41,044 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/mbrMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId-Inline
+### The error occurred while setting parameters
+### SQL: select * from t_mbr   where    mbr_id = ?
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 16:45:27,588 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/mbrMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId-Inline
+### The error occurred while setting parameters
+### SQL: select mbr_id from t_mbr   where    mbr_id = ?
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 16:46:08,435 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/mbrMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId-Inline
+### The error occurred while setting parameters
+### SQL: select mbr_id from t_mbr   where    mbr_id = ?
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 16:46:46,415 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: java.lang.Integer cannot be cast to java.util.Map,errorTyp: OTHER]
+  [Error] 16:47:58,169 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: java.lang.Integer cannot be cast to java.util.Map,errorTyp: OTHER]
+  [Error] 16:48:37,364 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/mbrMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId-Inline
+### The error occurred while setting parameters
+### SQL: select * from t_mbr   where    mbr_id = ?
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 16:50:53,748 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/mbrMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId-Inline
+### The error occurred while setting parameters
+### SQL: select mbr_id,person_id from t_mbr   where    mbr_id = ?
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 16:53:15,005 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/mbrMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId-Inline
+### The error occurred while setting parameters
+### SQL: select * from t_mbr   where    mbr_id = ?
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 16:54:10,126 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/mbrMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId-Inline
+### The error occurred while setting parameters
+### SQL: select * from t_mbr   where    mbr_id = 1648519
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 16:57:03,976 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/mbrMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId-Inline
+### The error occurred while setting parameters
+### SQL: select * from t_mbr   where    mbr_id = ?
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.mbrMapper.queryMbrByMbrId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 17:04:42,547 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.personMapper.queryPersonByPersonId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/personMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.personMapper.queryPersonByPersonId-Inline
+### The error occurred while setting parameters
+### SQL: select * from t_mbr_person   where    person_id = ?
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.personMapper.queryPersonByPersonId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  [Error] 17:04:56,051 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find result map com.mangocity.de.mbr.sqlmapper.personMapper.map
+### Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find result map com.mangocity.de.mbr.sqlmapper.personMapper.map,errorTyp: OTHER]
+  [Error] 17:05:40,573 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find result map java.util.Map
+### Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find result map java.util.Map,errorTyp: OTHER]
+  [Error] 17:06:33,052 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find result map java.util.Map
+### Cause: org.apache.ibatis.builder.IncompleteElementException: Could not find result map java.util.Map,errorTyp: OTHER]
+  

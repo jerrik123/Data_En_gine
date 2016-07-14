@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.voucher.voucherMapper">
+	<resultMap type="java.util.Map" id="tempList">
+	</resultMap>
+	<resultMap id="voucherMap" type="java.util.Map">
+		<result property="id" column="id" />
+		<result property="defid" column="DEFID" />
+		<result property="voucherName" column="VOUCHERNAME" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="usage" column="USAGE" />
+		<result property="voucherCode" column="VOUCHERCODE" />
+		<result property="amount" column="AMOUNT" />
+		<result property="password" column="PASSWORD" />
+		<result property="status" column="STATUS" />
+		<result property="needActivate" column="NEEDACTIVATE" />
+		<result property="activated" column="ACTIVATED" />
+		<result property="activatedTime" column="ACTIVATEDTIME" />
+		<result property="memberCD" column="MEMBERCD" />
+		<result property="valid" column="VALID" />
+		<result property="version" column="VERSION" />
+		<result property="creator" column="CREATOR" />
+		<result property="operator" column="OPERATOR" />
+		<result property="createTime" column="CREATETIME" />
+		<result property="operateTime" column="OPERATETIME" />
+		<result property="activate" column="ACTIVATE" />
+		<result property="deleted" column="DELETED" />
+		<result property="resumeFlag" column="RESUMEFLAG" />
+		<result property="userDefinedCodeRule" column="USERDEFINEDFLAG" />
+		<result property="agentType" column="AGENTTYPE" />
+		<result property="ruleId" column="RULEID" />
+		<result property="usedByCC" column="USEDBYCC" />
+		<result property="usedByWeb" column="USEDBYWEB" />
+		<result property="lowestcardLevel" column="LOWESTCARDLEVEL" />
+		<result property="personalCard" column="PERSONALCARD" />
+		<result property="staffCard" column="STAFFCARD" />
+		<result property="tmcCard" column="TMCCARD" />
+		<result property="forTicket" column="FORTICKET" />
+		<result property="forHotel" column="FORHOTEL" />
+		<result property="forPackage" column="FORPACKAGE" />
+		<result property="promotionName" column="PROMOTIONNAME" />
+		<result property="isUntread" column="ISUNTREAD" />
+		<result property="beginDate" column="BEGINDATE" />
+		<result property="endDate" column="ENDDATE" />
+		<result property="type" column="TYPE" /> 
+	</resultMap>
+
+	<resultMap id="voucherOrderMap" type="java.util.Map">
+		<result property="id" column="id" />
+		<result property="voucherId" column="VOUCHERID" />
+		<result property="voucherCode" column="VOUCHERCODE" />
+		<result property="orderCd" column="ORDERCD" />
+		<result property="membercd" column="MEMBERCD" />
+		<result property="productType" column="PRODUCTTYPE" />
+		<result property="coucherValue" column="COUCHERVALUE" />
+		<result property="exactAmount" column="EXACTAMOUNT" />
+		<result property="version" column="VERSION" />
+		<result property="creator" column="CREATOR" />
+		<result property="operator" column="OPERATOR" />
+		<result property="createTime" column="CREATETIME" />
+		<result property="operateTime" column="OPERATETIME" />
+		<result property="deleted" column="DELETED" />
+		<result property="description" column="description" />
+		<result property="voucherName" column="vouchername" />
+	</resultMap>
+
+	<!-- 代金券规则-渠道子表 -->
+	<resultMap id="voucherRuleAgentMap" type="java.util.Map">
+		<result property="agentId" column="AGANTID" />
+		<result property="ruleId" column="RULEID" />
+	</resultMap>
+
+	<select id="voucher_queryVoucherId" resultType="java.lang.Long">
+		SELECT
+		SEQ_VCH_VOUCHER.NEXTVAL FROM DUAL
+	</select>
+
+	<select id="voucher_queryVoucherOrderId" resultType="java.lang.Long">
+		SELECT
+		SEQ_VCH_VOUCHER_ORDER.NEXTVAL FROM DUAL
+	</select>
+
+	<!-- <select id="queryRuleAgent" parameterType="map" resultMap="voucherRuleAgentMap"> 
+		SELECT t.ID, t.RULEID, t.AGANTID FROM VCH_RULE_AGENT t WHERE t.ruleid = #{ruleId} 
+		</select> -->
+
+	<select id="voucher_queryNotUsedVoucher" parameterType="map"
+		resultMap="voucherMap">
+		select * from
+		(
+			select  a.*,rownum num
+			from
+		(
+				select v.id,
+		        v.DEFID,
+		        v.VERSION,
+		        v.VOUCHERNAME,
+		        v.DESCRIPTION,
+		        v.USAGE,
+		        v.VOUCHERCODE,
+		        v.AMOUNT,
+		        v.PASSWORD,
+		        v.STATUS,
+		        v.NEEDACTIVATE,
+		        v.ACTIVATED,
+		        v.ACTIVATEDTIME,
+		        v.MEMBERCD,
+		        v.VALID,
+		        v.RESUMEFLAG,
+		        v.CREATOR,
+		        v.OPERATOR,
+		        v.CREATETIME,
+		        v.OPERATETIME,
+		        v.ACTIVATE,
+		        v.DELETED,
+		       vr.USEDBYCC,
+		       vr.USEDBYWEB,
+		       vr.LOWESTCARDLEVEL,
+		       vr.FORTICKET,
+		       vr.FORHOTEL,
+		       vr.FORPACKAGE,
+		       vd.promotionname,
+		       vd.isuntread,
+		       to_char(vp.begindate,'yyyy-MM-dd') begindate,
+		       to_char(vp.enddate,'yyyy-MM-dd') enddate,
+		       vp.type
+		  from vch_voucher v
+		  inner join vch_voucher_rule vr on v.defid = vr.defid
+		  inner join vch_definition vd on vd.id = v.defid
+		  inner join vch_rule_valid_period vp on vr.id = vp.ruleid
+		  and v.valid='Y'
+		  and v.deleted='N' 
+		  and vp.deleted='N'
+		  and vd.deleted='N'
+		<if test="memberCdList != null">
+			AND v.MEMBERCD in 
+			<foreach item="item" index="index" collection="memberCdList" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		<if test="voucherCode != null">
+			AND v.VOUCHERCODE=#{voucherCode}
+		</if>
+		   AND v.status in (0,2)
+		   ORDER BY createtime desc
+		) a) where num &gt;#{startNum} AND #{endNum} &gt;= num
+	</select>
+
+	<select id="voucher_queryUsedVoucher" parameterType="map"
+		resultMap="voucherOrderMap">
+		select * from
+		(
+		select  a.*,rownum as num
+		from
+		(
+		SELECT
+		t.ID,
+		t.VOUCHERID,
+		t.VOUCHERCODE,
+		t.ORDERCD,
+		t.MEMBERCD,
+		decode(t.PRODUCTTYPE,0,'机票',1,'酒店',2,'度假','其他') PRODUCTTYPE,
+		t.COUCHERVALUE,
+		t.EXACTAMOUNT,
+		t.VERSION,
+		t.CREATOR,
+		t.OPERATOR,
+		t.CREATETIME,
+		t.OPERATETIME,
+		t.ACTIVATE,
+		t.DELETED,
+		v.description,
+		v.vouchername
+		FROM
+		VCH_VOUCHER_ORDER t left join vch_voucher v on t.voucherid=v.id 
+		WHERE t.DELETED='N'
+		<if test="memberCdList != null">
+			AND t.MEMBERCD in 
+			<foreach item="item" index="index" collection="memberCdList" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		) a) where num &gt;#{startNum} AND #{endNum} &gt;= num
+	</select>
+	<!-- <select id="queryVoucherByVoucherCode" parameterType="map" resultMap="voucherMap"> 
+		SELECT t.id, t.DEFID, t.VERSION, t.VOUCHERNAME, t.DESCRIPTION, t.USAGE, t.VOUCHERCODE, 
+		t.AMOUNT, t.PASSWORD, t.STATUS, t.NEEDACTIVATE, t.ACTIVATED, t.ACTIVATEDTIME, 
+		t.BEGINDATE, t.ENDDATE, t.MEMBERCD, t.VALID, t.RESUMEFLAG, t.CREATOR, t.OPERATOR, 
+		t.CREATETIME, t.OPERATETIME, t.ACTIVATE, t.DELETED, v.USERDEFINEDFLAG, r.AGENTTYPE, 
+		r.ID as RULEID FROM VCH_VOUCHER t,VCH_DEFINITION v,VCH_VOUCHER_RULE r WHERE 
+		t.valid='Y' and t.DEFID = v.id and t.defid = r.defid AND t.VOUCHERCODE=#{voucherCode} 
+		</select> -->
+
+</mapper> 

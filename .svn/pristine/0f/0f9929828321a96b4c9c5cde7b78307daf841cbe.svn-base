@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.deliveryAddressMapper">
+	
+	<resultMap type="java.util.Map" id="DeliveryAddress">
+		<result property="addressId" column="ADDRESS_ID"/>
+		<result property="mbrId" column="MBR_ID"/>
+		<result property="receiveName" column="RECEIVE_NAME"/>
+		<result property="province" column="PROVINCE"/>
+		<result property="city" column="CITY"/>
+		<result property="district" column="DISTRICT"/>
+		<result property="detailAddr" column="DETAIL_ADDR"/>
+		<result property="postalCode" column="POSTALCODE"/>
+		<result property="status" column="STATUS"/>
+		<result property="defaultAddr" column="DEFAULT_ADDR"/>
+		<result property="createBy" column="CREATE_BY"/>
+		<result property="createTime" column="CREATE_TIME"/>
+		<result property="updateBy" column="UPDATE_BY"/>
+		<result property="updateTime" column="UPDATE_TIME"/>
+		<result property="mobileNo" column="MOBILE_NO"/>
+		<result property="linkPhoneNo" column="LINK_PHONE_NO"/>
+		<result property="addrType" column="ADDR_TYPE"/>
+	</resultMap>
+
+	<select id="getAddressId" resultType="java.lang.Long">
+		SELECT SEQ_MBR_ADDR_ID.NEXTVAL FROM DUAL
+	</select>
+
+	<select id="queryAddressWithPage" resultMap="DeliveryAddress">
+		select ADDRESS_ID,MBR_ID,RECEIVE_NAME,PROVINCE,CITY,DISTRICT,DETAIL_ADDR,POSTALCODE,STATUS,DEFAULT_ADDR,CREATE_BY,CREATE_TIME,UPDATE_BY,UPDATE_TIME,MOBILE_NO,LINK_PHONE_NO,ADDR_TYPE
+        from (
+           select rownum num,ADDRESS_ID,MBR_ID,RECEIVE_NAME,PROVINCE,CITY,DISTRICT,DETAIL_ADDR,POSTALCODE,STATUS,DEFAULT_ADDR,CREATE_BY,CREATE_TIME,UPDATE_BY,UPDATE_TIME,MOBILE_NO,LINK_PHONE_NO,ADDR_TYPE
+           from (
+        	  select
+        	       ADDRESS_ID,
+	               MBR_ID,
+	               RECEIVE_NAME,
+	               PROVINCE,
+	               CITY,
+	               DISTRICT,
+	               DETAIL_ADDR,
+	               POSTALCODE,
+	               STATUS,
+	               DEFAULT_ADDR,
+	               CREATE_BY,
+	               CREATE_TIME,
+	               UPDATE_BY,
+	               UPDATE_TIME,
+	               MOBILE_NO,
+	               LINK_PHONE_NO,
+	               ADDR_TYPE
+	          from t_mbr_deliveryaddress ORDER BY UPDATE_TIME DESC )
+	       where MBR_ID = #{mbrId} and STATUS = 'VALID' and <![CDATA[ rownum <= #{endRow} )
+	    where num >= #{startRow} ]]>
+	</select>
+	
+	<insert id="createAddress" parameterType="java.util.Map">
+		insert into t_mbr_deliveryaddress (address_Id,
+				mbr_Id, receive_Name, province, city, district,
+				detail_Addr, postalcode, status, default_Addr,
+				create_By, create_Time,update_by,update_time,
+				mobile_No,link_Phone_No,addr_Type) 
+		values (#{addressId,jdbcType=NUMERIC},
+				#{mbrId,jdbcType=NUMERIC}, #{receiveName,jdbcType=VARCHAR},
+				#{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
+				#{district,jdbcType=VARCHAR}, #{detailAddr,jdbcType=VARCHAR},
+				#{postalCode,jdbcType=NUMERIC}, #{status,jdbcType=VARCHAR},
+				#{defaultAddr,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR},sysdate,
+				#{updateBy,jdbcType=VARCHAR},sysdate,
+				#{mobileNo,jdbcType=VARCHAR},#{linkPhoneNo,jdbcType=VARCHAR},#{addrType,jdbcType=VARCHAR})
+	</insert>
+	
+	<update id="updateAddress" parameterType="java.util.Map">
+		update t_mbr_deliveryaddress set
+				receive_Name = #{receiveName,jdbcType=VARCHAR},
+				province = #{province,jdbcType=VARCHAR}, 
+				city = #{city,jdbcType=VARCHAR},
+				district = #{district,jdbcType=VARCHAR}, 
+				detail_Addr = #{detailAddr,jdbcType=VARCHAR},
+				postalcode = #{postalCode,jdbcType=NUMERIC},
+				default_Addr = #{defaultAddr,jdbcType=VARCHAR}, 
+				update_By = #{updateBy,jdbcType=VARCHAR}, 
+				update_Time = sysdate,
+				mobile_No = #{mobileNo,jdbcType=VARCHAR},
+				link_Phone_No = #{linkPhoneNo,jdbcType=VARCHAR},
+				addr_Type = #{addrType,jdbcType=VARCHAR}
+		where address_Id = #{addressId}
+	</update>
+	
+	<update id="deleteAddressById" parameterType="java.util.Map">
+        update t_mbr_deliveryaddress set status='INVALID',update_time=sysdate where address_Id in
+        <foreach collection="ids" item="item" index="index" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+	</update>
+	
+	<update id="setDefaulAddressById" parameterType="java.util.Map">
+		
+		UPDATE T_MBR_DELIVERYADDRESS
+		SET DEFAULT_ADDR = (
+			CASE
+			WHEN DEFAULT_ADDR = '1' THEN
+				'0'
+			WHEN DEFAULT_ADDR = '0'
+			AND ADDRESS_ID = #{addressId} THEN
+				'1'
+			ELSE
+				'0'
+			END
+		)
+		WHERE
+			MBR_ID = #{mbrId}
+	</update>
+	
+	<update id="cancleDefaulAddressById">
+		update t_mbr_deliveryaddress set
+		    	default_Addr = 0,
+		    	update_Time = sysdate
+		where MBR_ID = #{mbrId} and default_Addr=1
+	</update>
+	
+	<select id="getAddressByAddressId" resultMap="DeliveryAddress">
+		SELECT ADDRESS_ID ,MBR_ID ,RECEIVE_NAME ,
+                PROVINCE ,CITY ,DISTRICT ,DETAIL_ADDR ,
+                POSTALCODE ,STATUS ,DEFAULT_ADDR ,CREATE_BY ,
+                CREATE_TIME ,UPDATE_BY ,UPDATE_TIME ,
+                MOBILE_NO,LINK_PHONE_NO ,ADDR_TYPE	
+            FROM t_mbr_deliveryaddress 
+			WHERE STATUS = 'VALID' and ADDRESS_ID = #{addressId}
+	</select>
+
+    <select id="queryAddressCount" resultType="java.lang.Long" parameterType="java.util.Map">
+        select count(*) from t_mbr_deliveryaddress where mbr_id = #{mbrId} and status = 'VALID'
+    </select>
+	
+</mapper> 

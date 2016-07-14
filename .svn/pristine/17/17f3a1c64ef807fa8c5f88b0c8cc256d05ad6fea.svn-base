@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.point.pointConvertMapper">
+	<select id="queryWltAccoutByCondition" parameterType="map" resultType="map">
+		select 
+				BIND_ID,
+				LOYALTY_ACC_NO,
+				BIND_ACC_NO,
+				COMP_CODE,
+				BIND_DATE,
+				BIND_USERNAME,
+				IS_LOCKED,
+				MBR_ID,
+				MBR_CD
+			from T_MBR_POINT_CONVERT_BIND
+			where 1=1
+			<if test="bindId != null and bindId != ''">
+				AND BIND_ID = #{bindId}
+			</if>
+			<if test="loyaltyAccNo != null and loyaltyAccNo != ''">
+				AND LOYALTY_ACC_NO = #{loyaltyAccNo}
+			</if>
+			<if test="bindAccNo != null and bindAccNo != ''">
+				AND BIND_ACC_NO = #{bindAccNo}
+			</if>
+			<if test="compCode != null and compCode != ''">
+				AND COMP_CODE = #{compCode}
+			</if>
+			<if test="bindUserName != null and bindUserName != ''">
+				AND BIND_USERNAME = #{bindUserName}
+			</if>
+			<if test="isLocked != null and isLocked != ''">
+				AND IS_LOCKED = #{isLocked}
+			</if>
+			<if test="mbrId != null and mbrId != ''">
+				AND MBR_ID = #{mbrId}
+			</if>
+			<if test="mbrCd != null and mbrCd != ''">
+				AND MBR_CD = #{mbrCd}
+			</if>
+	</select>
+	
+	<insert id="pointConvertBindCreate" parameterType="map">
+		insert into T_MBR_POINT_CONVERT_BIND(
+			BIND_ID,
+			LOYALTY_ACC_NO,
+			BIND_ACC_NO,
+			COMP_CODE,
+			BIND_DATE,
+			BIND_USERNAME,
+			IS_LOCKED,
+			MBR_ID,
+			MBR_CD
+			)
+			values
+			(
+			seq_mbr_point_convert.Nextval,
+			'${loyaltyAccNo}',
+			'${bindAccNo}',
+			'${compCode}',
+			sysdate,
+			'${bindUserName}',
+			null,
+			'${mbrId}',
+			'${mbrCd}'
+			)
+	</insert>
+	
+	<!-- 检查平安万里通的充值流水是否存在 -->
+	<select id="isExistWltOrder" parameterType="map" resultType="int">
+		SELECT 
+		COUNT(*)
+		FROM T_MBR_POINT_CONVERT
+		WHERE CELLULARQUERYREQUERTID = #{selCode}	
+	</select>
+	
+	<!-- 根据万里通订单号查询芒果订单流水情况 -->
+	<select id="queryPointConvertByOrder" parameterType="map" resultType="map">
+		SELECT
+			POINT_CONVERT_ID,
+			POINT_TRANSACTION_ID,
+			COMPCODE,
+			MBR_ID,
+			MBR_CD,
+			BINDACCNO,
+			BIND_USERNAME,
+			MANGOPOINT,
+			COAGENTPOINT,
+			HANDCHARGEPOINT,
+			CELLULARQUERYREQUERTID,
+			INOUT_STATUS,
+			CREATE_BY,
+			CREATE_TIM
+		FROM T_MBR_POINT_CONVERT
+		WHERE INOUT_STATUS = #{inOutStatus} and CELLULARQUERYREQUERTID = #{selCode}
+	</select>
+	
+	<insert id="insertPointConvert" parameterType="map">
+		INSERT INTO T_MBR_POINT_CONVERT(
+			POINT_CONVERT_ID ,
+			POINT_TRANSACTION_ID ,
+			COMPCODE ,
+			MBR_ID ,
+			MBR_CD,
+			BINDACCNO,
+			MANGOPOINT,
+			COAGENTPOINT,
+			HANDCHARGEPOINT,
+			CELLULARQUERYREQUERTID,
+			INOUT_STATUS,
+			CREATE_BY,
+			CREATE_TIM,
+			UPDATE_TIM,
+			UPDATE_BY,
+			BIND_USERNAME
+			) VALUES(
+			#{pointConvertId},
+			#{pointTransactionId},
+			'${compCode}',
+			'${mbrId}',
+			'${mbrCd}',
+			'${bindAccno}',
+			'${mangoPoint}',
+			'${coagentPoint}',
+			'${handchargePoint}',
+			'${selCode}',
+			'${inoutStatus}',
+			'${createBy}',
+			SYSDATE,
+			SYSDATE,
+			'${updateBy}',
+			'${bindUserName}'
+			)
+	</insert>
+	
+	<select id="getSeqMbrPointConvert" resultType="long">
+		SELECT
+			seq_mbr_point_convert.nextval
+		FROM 
+			DUAL
+	</select>
+</mapper> 

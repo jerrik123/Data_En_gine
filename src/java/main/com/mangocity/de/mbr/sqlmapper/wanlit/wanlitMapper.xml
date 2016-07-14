@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.wanlit.wanlitMapper">
+	<select id="isExistedPartnerSalesTransNO" parameterType="map" resultType="long">
+		SELECT 
+			COUNT(*)
+		FROM T_MBR_POINT_CONVERT
+			WHERE CELLULARQUERYREQUERTID = #{partnerSalesTransNO}
+	</select>
+</mapper> 

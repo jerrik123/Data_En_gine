@@ -1,0 +1,9 @@
+#数据库连接参数
+driver=oracle.jdbc.driver.OracleDriver
+url=jdbc:oracle:thin:@//10.10.5.18:1901/hccdb
+username=mbr
+password=mbr
+
+#代金券
+username.voucher=voucher
+password.voucher=voucher

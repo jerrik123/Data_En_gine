@@ -1,0 +1,65 @@
+package com.mangocity.de.mbr.datafactory;
+
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.BusinessException;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.de.mbr.book.ErrorConstant;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+/**
+ * 
+ * @ClassName: MbrCommFactory
+ * @Description: (通用会员数据工厂)
+ * @author Syungen
+ * @date 2015年8月25日 下午6:19:22
+ *
+ */
+public class MbrCommFactory {
+	private static final Logger log = Logger.getLogger(MbrCommFactory.class);
+	
+	/**
+	 * @Title: queryMobileNoByMbrId
+	 * @Description: 根据mbrId查询绑定手机
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public Map<String, Object> queryMobileNoByMbrId(EngineBean pb) throws ExceptionAbstract {
+		log.info("MbrCommFactory queryMobileNoByMbrId begin()...params: " + pb.getHeadMap());
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> mbrMap = SqlUtil.getInstance().selectOne("queryMbrByMbrId", pb.getHeadMap());
+		checkMbrIsValid(mbrMap);//检测会员是否有效
+		Map<String, Object> resultMap = SqlUtil.getInstance().selectOne("queryMobileNoByMbrId", pb.getHeadMap());
+		if(CommonUtils.isEmpty(resultMap)){
+			log.info("mbrId: " + pb.getHead("mbrId") +"不存在该会员");
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_NOT_EXIST_30001, "该会员不存在");
+		}else if(CommonUtils.isBlank((String)resultMap.get("mobileNo"))){
+			log.info("mbrId: " + pb.getHead("mbrId") +"该会员没有绑定手机号");
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_NOT_BINDED_MOBILNO_30007, "该会员没有绑定手机号");
+		}
+		log.info("mbrId: " + pb.getHead("mbrId") +" ,绑定的手机号是: " + resultMap.get("mobileNo"));
+		resultMap.remove("personId");
+		return resultMap;
+	}
+
+	private void checkMbrIsValid(Map<String, Object> mbrMap) throws BusinessException {
+		if(null == mbrMap){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_NOT_EXIST_30001, "该会员不存在");
+		}
+		String stus = String.valueOf(mbrMap.get("stus"));
+		if("CTS_Freeze".equals(stus)||"2".equals(stus)){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_IS_FREEZE_30003, "该会员已冻结");
+		}else if("Cancelled".equals(stus)||"3".equals(stus)){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_IS_LOGOUT_30005, "该会员已注销");
+		}else if("0".equals(stus)){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_NOT_ACTIVATED_30009, "该会员未激活");
+		}
+	}
+	
+}

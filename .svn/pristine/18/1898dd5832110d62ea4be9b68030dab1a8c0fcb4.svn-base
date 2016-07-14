@@ -1,0 +1,48 @@
+<mangocity>
+	<action mangoId="getUserInfo" mangoClass="com.mangocity.demo.UserInfoService" responseType="text/html">
+		<resultList>
+			<result name="success" type="forward"></result>
+			<result name="login" type="redirect"></result>
+		</resultList>
+	</action>
+	<!-- 会员 -->
+	<action
+		mangoId="mbrRegister,validateUniqueMbrByLoginName,login,resetPassword,queryMbrIdByLoginName,queryMbrIdByLoginNameAndPassword,queryRegisterByLoginNameAndPassword,updateMobileNo"
+		mangoClass="com.mangocity.de.mbr.datafactory.MbrFactory"></action>
+	<!-- 会籍 -->
+	<action mangoId="queryMbrShipListByMbrid"
+		mangoClass="com.mangocity.de.mbr.datafactory.MbrShipFactory"></action>
+	<!-- 积分 -->
+	<action
+		mangoId="cutPoint,queryEnabledPoint,queryPointTransaction,addAwardPoints"
+		mangoClass="com.mangocity.de.mbr.datafactory.PointFactory"></action>
+
+	<!-- 第三方服务 -->
+	<action mangoId="thirdpartyBinding,isBindedMango,queryReisterByOpenid"
+		mangoClass="com.mangocity.de.mbr.datafactory.ThirdpartyFactory"></action>
+
+	<!-- 现金账户 -->
+	<action
+		mangoId="queryCashAccountBalance,queryCashAccountInCome,queryCashAccountOutCome,queryCashAccountApplyRecord,queryAllCashAccountTrans"
+		mangoClass="com.mangocity.de.mbr.datafactory.CashAccountFactory"></action>
+
+	<!-- 代金券 -->
+	<action mangoId="queryNotUsedVoucher,queryUsedVoucher,queryVoucherBalanceByCd"
+		mangoClass="com.mangocity.de.mbr.datafactory.VoucherFactory"></action>
+
+	<!-- 通讯服务(短信、邮件)aaabbb -->
+	<action
+		mangoId="sendSms,validateSms,updateSmsByMobileNoAndCode,addSmsRecord,querySmsCount,addSmsCount"
+		mangoClass="com.mangocity.de.mbr.datafactory.CommunicationFactory"></action>
+
+	<!-- 通用会员服务 -->
+	<action mangoId="queryMobileNoByMbrId,updateMbrInfo"
+		mangoClass="com.mangocity.de.mbr.datafactory.MbrCommFactory"></action>
+
+	<!-- mbrmg管理后台服务 -->
+	<action mangoId="adminLogin,queryModuleByUserId"
+		mangoClass="com.mangocity.de.mbr.datafactory.MbrManageFactory"></action>
+
+	<!-- 其他扩展服务(用户设备认证) -->
+	<action mangoId="addUserDevice,updateUserDevice,queryUserDeviceByUserId" mangoClass="com.mangocity.de.mbr.datafactory.ExpandFactory"></action>
+</mangocity>

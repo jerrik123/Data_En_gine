@@ -1,0 +1,188 @@
+package com.mangocity.de.mbr.datafactory;
+
+import static com.mangocity.ce.util.CommonUtils.isBlankIncludeNull;
+import static com.mangocity.ce.util.CommonUtils.isEmpty;
+import static com.mangocity.ce.util.CommonUtils.objectToLong;
+
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.BusinessException;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.ce.util.New;
+import com.mangocity.de.mbr.book.ErrorConstant;
+import com.mangocity.de.mbr.util.ConstantArgs;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+/**
+ * @ClassName: PointExchangeInFactory
+ * @Description: (积分互换-万里通积分转换为芒果网积分-积分转入)
+ * @author YangJie
+ * @date 2016年4月1日 下午6:19:22
+ */
+public class PointExchangeInFactory {
+	private static final Logger log = Logger.getLogger(PointExchangeInFactory.class);
+
+	/**
+	 * 芒果网用户验证接口
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public Map<String,Object> partnersUserValidate(EngineBean pb) throws ExceptionAbstract {
+		log.info("PointExchangeInFactory partnersUserValidate begin()...appId: " + pb.getAppId() + " ,params: "
+				+ pb.getHeadMap());
+		String oldMbrshipCd = String.valueOf(pb.getHeadMap().get("oldMbrshipCd"));
+		Long mbrId = objectToLong(SqlUtil.getInstance().selectOneString("queryMbrIdByOldMbrshipCd", pb.getHeadMap()), -1L);
+		log.info("[SQL] queryMbrIdByOldMbrshipCd, oldMbrshipCd: " + oldMbrshipCd + " ,mbrId: " + mbrId);
+		
+		//构造返回数据
+		Map<String,Object> resultMap = New.map();
+		if(-1L == mbrId){
+			resultMap.put("validateSucc", false);
+		}else{
+			resultMap.put("validateSucc", true);
+		}
+		return resultMap;
+	}
+
+	/**
+	 * 芒果网创建订单接口(积分互换)
+	 *   	<OutCustID>SHATUB218</OutCustID>
+	        <CellularQueryRequestID>K15101290881235</CellularQueryRequestID>
+	        <Account>94000</Account>
+	        <SN>eea3f9b98900edf64addf7ff9774aacd</SN>
+	        <Note>积分互换</Note>
+	        <Points>100000</Points>
+	        <CustID>660013322511</CustID>
+	        <PARTNERASIGNNUM>00000001</PARTNERASIGNNUM>
+	        
+	        {
+	        	"oldMbrshipCd":"老的会籍编码",
+	        	"partnerSalesTransNO":"合作方订单号",
+	        	"bindUserName":"绑定的平安万里通用户名",
+	        	"points":"",
+	        	"amount":"",
+	        	
+	        }
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public Map<String,Object> partnersCreateOrder(EngineBean pb) throws ExceptionAbstract {
+		log.info("PointExchangeInFactory partnersCreateOrder begin()...appId: " + pb.getAppId() + " ,params: "
+				+ pb.getHeadMap());
+		Map<String,Object> paramMap = New.map();
+		paramMap.put("mbrshipCd", pb.getHeadMap().get("oldMbrshipCd"));
+		
+		//step1: 根据旧会籍号查询会籍信息,如果会籍状态不是有效,则直接抛出异常
+		Map<String,Object> mbrshipMap = SqlUtil.getInstance().selectOne("queryMbrShipByMbrshipCd", paramMap);
+		log.info("mbrshipMap: " + mbrshipMap);
+		if(isEmpty(mbrshipMap) || 
+				isBlankIncludeNull(String.valueOf(mbrshipMap.get("STUS")))
+				||!ConstantArgs.STATUS_ACTIVE.equals(String.valueOf(mbrshipMap.get("STUS")))){
+			throw new BusinessException(this, ErrorConstant.Mbrship.ERROR_MBRSHIP_IS_NOT_ACTIVED, "会籍状态没有激活");
+		}
+		//step2: 根据会籍信息中的会员id查询会员信息,如果会员不是有效会员,则抛出异常
+		paramMap = New.map();
+		paramMap.put("mbrId", mbrshipMap.get("MBR_ID"));
+		Map<String,Object> mbrMap = SqlUtil.getInstance().selectOne("queryMbrByMbrId", paramMap);
+		log.info("mbrMap: " + mbrMap);
+		
+		if(isEmpty(mbrMap) || 
+				isBlankIncludeNull(String.valueOf(mbrMap.get("stus")))
+				||!ConstantArgs.STATUS_ACTIVE.equals(String.valueOf(mbrMap.get("STUS")))){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_NOT_ACTIVATED_30009, "会员状态没有被激活");
+		}
+		
+		//step3:判断充值流水是否存在,如果充值流水已存在,则抛出异常
+		Long count = objectToLong(SqlUtil.getInstance().selectOneString("isExistedPartnerSalesTransNO", pb.getHeadMap()), -1L);
+		log.info("判断充值流水是否存在: count: " + count);
+		if(-1L != count && count.intValue() >0 ){
+			throw new BusinessException(this, ErrorConstant.PointExchange.ERROR_WANLIT_FILL_TRANS_IS_EXISTED, "万里通充值流水已经存在");
+		}
+		//step4:兑换
+		//TODO
+		log.info("开始兑换...");
+		
+
+		return null;
+	}
+
+	/**
+	 * 芒果网查询芒果网积分接口
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public Map<String,Object> partnersIntegralSelUseablePointQuery(EngineBean pb) throws ExceptionAbstract {
+		log.info("PointExchangeInFactory partnersIntegralSelUseablePointQuery begin()...appId: " + pb.getAppId()
+				+ " ,params: " + pb.getHeadMap());
+		Map<String,Object> paramMap = New.map();
+		paramMap.put("mbrshipCd", pb.getHeadMap().get("oldMbrshipCd"));
+		
+		//step1: 根据旧会籍号查询会籍信息,如果会籍状态不是有效,则直接抛出异常
+		Map<String,Object> mbrshipMap = SqlUtil.getInstance().selectOne("queryMbrShipByMbrshipCd", paramMap);
+		log.info("mbrshipMap: " + mbrshipMap);
+		if(isEmpty(mbrshipMap) || 
+				isBlankIncludeNull(String.valueOf(mbrshipMap.get("STUS")))
+				||!ConstantArgs.STATUS_ACTIVE.equals(String.valueOf(mbrshipMap.get("STUS")))){
+			throw new BusinessException(this, ErrorConstant.Mbrship.ERROR_MBRSHIP_IS_NOT_ACTIVED, "会籍状态没有激活");
+		}
+		//step2: 根据会籍信息中的会员id查询会员信息,如果会员不是有效会员,则抛出异常
+		paramMap = New.map();
+		paramMap.put("mbrId", mbrshipMap.get("MBR_ID"));
+		Map<String,Object> mbrMap = SqlUtil.getInstance().selectOne("queryMbrByMbrId", paramMap);
+		log.info("mbrMap: " + mbrMap);
+		
+		if(isEmpty(mbrMap) || 
+				isBlankIncludeNull(String.valueOf(mbrMap.get("stus")))
+				||!ConstantArgs.STATUS_ACTIVE.equals(String.valueOf(mbrMap.get("stus")))){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_NOT_ACTIVATED_30009, "会员状态没有被激活");
+		}
+		
+		String attribute = String.valueOf(mbrMap.get("attribute"));
+		//step3:判断是集团会员还是芒果网本地会员
+		if (CommonUtils.isNotBlank(attribute)) {// 普通会员
+			if (ConstantArgs.MBR_ATTRIBUTE_CUSTOMER.equals(attribute)) {// 普通会员
+				
+			} else if (ConstantArgs.MBR_ATTRIBUTE_MBR.equals(attribute)) {// 集团
+				throw new BusinessException(this, ErrorConstant.Mbr.ERROR_CRM_MBR_NOT_SUPPORT_POINT_CUT_30008, "该会员是集团会员,暂不支持查询集团积分");
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * 芒果网账户绑定接口
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public Map<String,Object> partnersIntegralBindUserQuery(EngineBean pb) throws ExceptionAbstract {
+		log.info("PointExchangeInFactory partnersIntegralBindUserQuery begin()...appId: " + pb.getAppId() + " ,params: "
+				+ pb.getHeadMap());
+
+		return null;
+	}
+
+	/**
+	 * 芒果网订单查询接口
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public Map<String,Object> partnersOrderQuery(EngineBean pb) throws ExceptionAbstract {
+		log.info("PointExchangeInFactory partnersOrderQuery begin()...appId: " + pb.getAppId() + " ,params: "
+				+ pb.getHeadMap());
+		return null;
+	}
+}

@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.passengerMapper">
+	<resultMap type="java.util.Map" id="tempList">
+	</resultMap>
+
+	<insert id="addPassengerInfo" parameterType="map">
+		insert into
+		t_mbr_passenger
+		(PASS_ID,
+		MBR_ID,
+		CHI_NAME,
+		FIRST_NAME,
+		MIDDLE_NAME,
+		LAST_NAME,
+		GENDER,
+		COUNTRY,
+		MOBILE_COUNTRY_CD,
+		MOBILE_NO,
+		LINK_DISTRICT_CD,
+		BIRTHDAY,
+		IDENTITY,
+		STATUS,
+		LINK_PHONE_NO,
+		LINK_BRANCH_NO,
+		FAX_DISTRICT_CD,
+		FAX_NO,
+		FAX_BRANTH_NO,
+		PASS_TYPE,
+		CREATE_BY,
+		CREATE_TIME,
+		UPDATE_BY,
+		UPDATE_TIME,
+		LAST_USED_TIME,
+		USEDTIMES,
+		ISDEFAULT,
+		USE_COUNT,
+		SEQNO,
+		RELATION,
+		EMAIL)
+		values
+		(${PASS_ID},
+		'${MBR_ID}',
+		'${CHI_NAME}',
+		'${FIRST_NAME}',
+		'${MIDDLE_NAME}',
+		'${LAST_NAME}',
+		'${GENDER}',
+		'${COUNTRY}',
+		'${MOBILE_COUNTRY_CD}',
+		'${MOBILE_NO}',
+		'${LINK_DISTRICT_CD}',
+		to_date('${BIRTHDAY}','YYYY-MM-DD'),
+		'${IDENTITY}',
+		'VALID',
+		'${LINK_PHONE_NO}',
+		'${LINK_BRANCH_NO}',
+		'${FAX_DISTRICT_CD}',
+		'${FAX_NO}',
+		'${FAX_BRANTH_NO}',
+		'${PASS_TYPE}',
+		'MEMBER API',
+		 SYSDATE,
+		'${UPDATE_BY}',
+		SYSDATE,
+		SYSDATE,
+		'${USEDTIMES}',
+		'N',
+		0,
+		'${SEQNO}',
+		'${RELATION}',
+		'${EMAIL}')
+	</insert>
+	
+	<insert id="addPassengerCertificateInfo" parameterType="map">
+		insert into T_MBR_PASSENGER_CERTIFICATE (cer_Id, pass_Id,
+			cer_Type, cer_No, cer_Eff_Date, status, create_By,
+			create_Time, update_By, update_Time) values
+			(SEQ_PASS_CER_ID.NEXTVAL,
+			${PASS_ID},
+			'${CER_TYPE}',
+			'${CER_NO}', 
+			'${CEREFFDATE}',
+			'VALID',
+			'${CREATEBY}',
+			 SYSDATE, 
+			'${UPDATEBY}',
+			sysdate)
+	</insert>
+	
+	
+	<update id="deletePassengerInfo" parameterType="map">
+		<!-- delete from t_mbr_passenger p where p.mbr_id=#{MBR_ID} -->
+		update t_mbr_passenger set STATUS='INVALID' where mbr_id=#{MBR_ID} and pass_id=#{PASS_ID}
+	</update>
+	
+	<update id="deletePassengerCertificateInfo" parameterType="map">
+		<!-- delete from t_mbr_passenger_certificate c where c.pass_id=#{PASS_ID} -->
+		update t_mbr_passenger_certificate set STATUS='INVALID' where pass_id=#{PASS_ID}
+	</update>
+	
+	<update id="updatePassengerInfo" parameterType="map">
+		update
+		t_mbr_passenger
+		<set>
+			<if test="CHI_NAME != null">
+				CHI_NAME = #{CHI_NAME},
+			</if>
+			<if test="FIRST_NAME != null">
+				FIRST_NAME = #{FIRST_NAME},
+			</if>
+			<if test="MIDDLE_NAME != null">
+				MIDDLE_NAME = #{MIDDLE_NAME},
+			</if>
+			<if test="LAST_NAME != null">
+				LAST_NAME = #{LAST_NAME},
+			</if>
+			<if test="GENDER != null">
+				GENDER = #{GENDER},
+			</if>
+			<if test="COUNTRY != null">
+				COUNTRY = #{COUNTRY},
+			</if>
+			<if test="MOBILE_COUNTRY_CD != null">
+				MOBILE_COUNTRY_CD = #{MOBILE_COUNTRY_CD},
+			</if>
+			<if test="MOBILE_NO != null">
+				MOBILE_NO = #{MOBILE_NO},
+			</if>
+			<if test="LINK_DISTRICT_CD != null">
+				LINK_DISTRICT_CD = #{LINK_DISTRICT_CD},
+			</if>
+			<if test="BIRTHDAY != null">
+				BIRTHDAY = to_date(#{BIRTHDAY},'YYYY-MM-DD'),
+			</if>
+			<if test="IDENTITY != null">
+				IDENTITY = #{IDENTITY},
+			</if>
+			<if test="STATUS != null">
+				STATUS = #{STATUS},
+			</if>
+			<if test="LINK_PHONE_NO != null">
+				LINK_PHONE_NO = #{LINK_PHONE_NO},
+			</if>
+			<if test="LINK_BRANCH_NO != null">
+				LINK_BRANCH_NO = #{LINK_BRANCH_NO},
+			</if>
+			<if test="FAX_DISTRICT_CD != null">
+				FAX_DISTRICT_CD = #{FAX_DISTRICT_CD},
+			</if>
+			<if test="FAX_NO != null">
+				FAX_NO = #{FAX_NO},
+			</if>
+			<if test="FAX_BRANTH_NO != null">
+				FAX_BRANTH_NO = #{FAX_BRANTH_NO},
+			</if>
+			<if test="PASS_TYPE != null">
+				PASS_TYPE = #{PASS_TYPE},
+			</if>
+			<if test="LAST_USED_TIME != null">
+				LAST_USED_TIME = to_date(#{LAST_USED_TIME},'YYYY-MM-DD'),
+			</if>
+			<if test="USEDTIMES != null">
+				USEDTIMES = #{USEDTIMES},
+			</if>
+			<if test="ISDEFAULT != null">
+				ISDEFAULT = #{ISDEFAULT},
+			</if>
+			<if test="USE_COUNT != null">
+				USE_COUNT = #{USE_COUNT},
+			</if>
+			<if test="SEQNO != null">
+				SEQNO = #{SEQNO},
+			</if>
+			<if test="RELATION != null">
+				RELATION = #{RELATION},
+			</if>
+			<if test="EMAIL != null">
+				EMAIL = #{EMAIL},
+			</if>
+		</set>
+       ,UPDATE_TIME =sysdate,
+       UPDATE_BY='MEMBER API'
+       where mbr_id=#{MBR_ID} and PASS_ID=#{PASS_ID}
+	</update>
+	
+	<update id="updatePassengerCertificateInfo" parameterType="map">
+		update t_mbr_passenger_certificate
+		<set>
+			<if test="CER_NO != null">
+				CER_NO = #{CER_NO},
+			</if>
+			<if test="CER_EFF_DATE != null">
+				CER_EFF_DATE = #{CER_EFF_DATE},
+			</if>
+			<if test="STATUS != null">
+				STATUS = #{STATUS},
+			</if>
+		</set>
+		,UPDATE_TIME =sysdate,
+        UPDATE_BY='MEMBER API'
+        where pass_id = #{PASS_ID} and CER_TYPE = #{CER_TYPE}
+	</update>
+	
+	<!-- 为了方便组装数据,passenger:"",list:[{}] -->
+	<select id="queryPassengerInfo" parameterType="map" resultType="map">
+	select t.*
+    from (select a.*, rownum as num
+          from (select * from t_mbr_passenger p where p.mbr_id = #{MBR_ID}) a) t
+     where num &gt;#{startNum} AND #{endNum} &gt;= num
+	</select>
+	
+	<select id="queryPassengerCertificateInfo" parameterType="map" resultType="map">
+		select * from t_mbr_passenger_certificate c where c.pass_id in
+			 <foreach item="var" collection="list" index="" open="(" close=")" separator=",">
+				#{var,jdbcType=INTEGER}
+			</foreach>
+	</select>
+<select id="getPassId" resultType="java.lang.Long">
+		SELECT SEQ_PASS_CER_ID.NEXTVAL+13683326 FROM DUAL
+	</select>
+	<select id="getPassCountByMbrId" resultType="java.lang.Long">
+		select count(1) from t_mbr_passenger f where f.mbr_id=${MBR_ID} and f.status='VALID'
+	</select>
+	
+	<select id="queryPassengerDetailById" parameterType="map" resultType="map">
+		select * from t_mbr_passenger p where p.mbr_id = #{MBR_ID} and p.pass_id=#{PASS_ID}
+	</select>
+	
+	<select id="queryPassengerCertificateDetailById" parameterType="map" resultType="map">
+		select * from  t_mbr_passenger_certificate c where c.pass_id=#{PASS_ID}
+	</select>
+	
+	<select id="queryPassengerStatusByPassId" parameterType="map" resultType="map">
+		select tp.status from t_mbr_passenger tp where tp.mbr_id=#{MBR_ID} and tp.pass_id=#{PASS_ID}
+	</select>
+	
+	<select id="queryCertificateStatusByPassId" parameterType="map" resultType="map">
+		select c.status from  t_mbr_passenger_certificate c where c.pass_id=#{PASS_ID} and c.cer_type=#{CER_TYPE}
+	</select>
+	
+</mapper> 

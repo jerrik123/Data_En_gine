@@ -1,0 +1,42 @@
+package com.mangocity.de.mbr.sqlmapper;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Select;
+
+public interface voucherMapper {
+	/**
+	* @Title: queryNotUsedVoucher 
+	* @Description: 查询未被使用的代金券
+	* @param 
+	* @return List<Map<String,Object>>    返回类型
+	 */
+	public List<Map> voucher_queryNotUsedVoucher(Map headMap);
+	
+	/**
+	* @Title: queryUsedVoucher 
+	* @Description: 查询已经被使用的代金券
+	* @param 
+	* @return List<Map<String,Object>>    返回类型
+	 */
+	public List<Map> voucher_queryUsedVoucher(Map headMap);
+	
+	/**
+	* @Title: queryVoucherId 
+	* @Description: 查询代金券id
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long voucher_queryVoucherId();
+	
+	/**
+	* @Title: queryVoucherOrderId 
+	* @Description: 查询代金券OrderId
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long voucher_queryVoucherOrderId();
+	@Select("SELECT sum(AMOUNT) AMOUNT FROM VCH_VOUCHER t WHERE t.valid='Y' and status='0' and enddate>=sysdate and membercd in (${memberCds})")
+	public Map voucher_queryVoucherBalance(Map headMap);
+}

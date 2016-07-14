@@ -1,0 +1,57 @@
+package com.mangocity.de.mbr.sqlmapper;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+public interface communicationMapper {
+	/**
+	* @Title: validateSms 
+	* @Description: 验证短信(现在是3分钟内有效)
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long validateSms(Map headMap);
+	
+	/**
+	* @Title: validateSmsByCondition 
+	* @Description: 验证短信(自己设置时间:分钟数)
+	* @param 
+	* @return Map    返回类型
+	 */
+	public Map validateSmsByCondition(Map headMap);
+	
+	/**
+	* @Title: updateSmsByMobileNoAndCode 
+	* @Description: 修改短信记录
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long updateSmsByMobileNoAndCode(Map headMap);
+	
+	/**
+	* @Title: addSmsRecord 
+	* @Description: 添加短信记录
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long addSmsRecord(Map headMap);
+	
+	/**
+	* @Title: querySmsCount 
+	* @Description: 查询短信次数
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long querySmsCount(Map headMap);
+	
+	/**
+	* @Title: addSmsCount 
+	* @Description: 添加短信记录
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long addSmsCount(Map headMap);
+	
+	public Date querySystemDate(Map headMap);
+}

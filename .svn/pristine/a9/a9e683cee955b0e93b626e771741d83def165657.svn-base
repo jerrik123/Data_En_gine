@@ -1,0 +1,110 @@
+package com.mangocity.de.mbr.sqlmapper;
+
+import java.util.List;
+import java.util.Map;
+
+public interface pointAccountMapper {
+	/**
+	  * @Title:  queryPointAccountByMbrId
+	  * @Description: (根据mbrId查询积分账户信息) 
+	  * @param @param headMap  参数说明 
+	  * @return void    返回类型
+	 */
+	public Map queryPointAccountByMbrId(Map headMap);
+	
+	/**
+	  * @Title:  queryPointBalanceByAccountId(getPointBalance)
+	  * @Description: (根据accountId查询积分余额) 
+	  * @param  headMap  参数说明 
+	  * @return Long    返回类型
+	 */
+	public Long queryPointBalanceByAccountId(Map headMap);
+	
+	/**
+	  * @Title:  queryVersionByMbrId
+	  * @Description: (根据mbrId查询版本号) 
+	  * @param  headMap  参数说明 
+	  * @return Long    返回类型
+	 */
+	public Long queryVersionByMbrId(Map headMap);
+	
+	/**
+	  * @Title:  updatePointAccoount
+	  * @Description: (更新积分账户) 
+	  * @param  headMap  参数说明 
+	  * @return Integer    返回类型
+	 */
+	public Integer updatePointAccoount(Map headMap);
+	
+	/**
+	  * @Title:  updatePointAccoount
+	  * @Description: (创建积分账户) 
+	  * @param  headMap  参数说明 
+	  * @return Integer    返回类型
+	 */
+	public Integer pointAccountCreate(Map headMap);
+	
+	/**
+	  * @Title:  queryUseredPointBalanceByMbrId
+	  * @Description: (根据mbrId查询可用积分,注意:结果有多行) 
+	  * @param  headMap  参数说明 
+	  * @return List    返回类型
+	 */
+	public List<Map> queryUseredPointBalanceByMbrId(Map headMap);
+	
+	/**
+	  * @Title:  updatePointBalanceByBalanceId
+	  * @Description: (更新积分余额信息) 
+	  * @param  headMap  参数说明 
+	  * @return Integer    返回类型
+	 */
+	public Integer updatePointBalanceByBalanceId(Map headMap);
+	
+	/**
+	  * @Title:  queryPointBalanceOnMonth
+	  * @Description: (根据mbrId查询积分余额,按createMonth降序,注意:结果有多行) 
+	  * @param  headMap  参数说明 
+	  * @return List    返回类型
+	 */
+	public List<Map> queryPointBalanceOnMonthByMbrId(Map headMap);
+	
+	/**
+	  * @Title:  insertPointBalance
+	  * @Description: (插入一条积分余额记录) 
+	  * @param  headMap  参数说明 
+	  * @return Integer    返回类型
+	 */
+	public Integer insertPointBalance(Map headMap);
+	
+	/**
+	  * @Title:  updateVersionByMbrId
+	  * @Description: (版本号加1) 
+	  * @param  headMap  参数说明 
+	  * @return Integer    返回类型
+	 */
+	public Integer updateVersionByMbrId(Map headMap);
+	
+	/**
+	  * @Title:  queryPointTranId
+	  * @Description: (获得PointTranId) 
+	  * @param  headMap  参数说明 
+	  * @return Long    返回类型
+	 */
+	public Long queryPointTranId();
+	
+	/**
+	  * @Title:  insertPointTransaction
+	  * @Description: (添加交易流水) 
+	  * @param  headMap  参数说明 
+	  * @return Integer    返回类型
+	 */
+	public Integer insertPointTransaction(Map headMap);
+	
+	/**
+	  * @Title:  queryPointAccountByCondition
+	  * @Description: (根据条件查询积分账户信息) 
+	  * @param  headMap  参数说明 
+	  * @return Map    返回类型
+	 */
+	public Map queryPointAccountByCondition(Map headMap);
+}

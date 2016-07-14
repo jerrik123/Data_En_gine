@@ -1,0 +1,144 @@
+package com.mangocity.de.mbr.datafactory;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.BusinessException;
+import com.mangocity.ce.exception.DatabaseException;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.de.mbr.book.ErrorConstant;
+import com.mangocity.de.mbr.util.SqlUtil;
+import com.mangocity.de.mbr.util.StringUtil;
+
+/**
+ * 
+ * @ClassName: CommunicationFactory
+ * @Description: (通讯服务-短信、邮件等等)
+ * @author Yangjie
+ * @date 2015年9月21日 上午10:19:22
+ */
+public class CommunicationFactory {
+	private static final Logger log = Logger.getLogger(CommunicationFactory.class);
+
+	/**
+	 * @Title: validateSms
+	 * @Description: 验证短信
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public Map<String,Object> validateSms(EngineBean pb) throws ExceptionAbstract {
+		log.info("CommunicationFactory validateSms begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		final int SMS_EXPIRETIME = -3;//默认短信过期时间为3分钟
+		Map<String, Object> map = SqlUtil.getInstance().selectOne("validateSmsByCondition", headMap);
+		Map<String, Object> bodyMap = new HashMap<String, Object>();
+		bodyMap.put("isValidateSucc", CommonUtils.isEmpty(map)?false:true);
+		if(CommonUtils.isEmpty(map)){
+			log.info("无此手机对应的验证码记录");
+			throw new BusinessException(this, ErrorConstant.Sms.ERROR_SMS_VALIDATE_FAIL, "短信校验失败");
+		}
+		if("INVALID".equals(map.get("status"))){
+			throw new BusinessException(this, ErrorConstant.Sms.ERROR_SMS_VALIDATE_FAIL, "短信已失效");
+		}
+		if(CommonUtils.isEmpty(map.get("createTime"))){
+			throw new BusinessException(this, ErrorConstant.ERROR_PARAM_NULL_10000, "缺失短信创建时间");
+		}
+		try {
+			//判断查询出来的日期是否和系统日期相差3分钟之内
+			if(CommonUtils.addMinutes(new Date(), SMS_EXPIRETIME).
+					after(CommonUtils.parseDate(StringUtil.removeExtraDateChar(String.valueOf(map.get("createTime"))), 
+							"yyyy-MM-dd HH:mm:ss"))){
+				throw new BusinessException(this, ErrorConstant.Sms.ERROR_SMS_OVERTIME_FAIL, "短信在"+(-SMS_EXPIRETIME)+"分钟内有效");
+			}
+		} catch (ParseException e) {
+			throw new BusinessException(this, ErrorConstant.ERROR_PARAM_PARSE_FAIL_10003, "日期转换失败");
+		}
+		return bodyMap;
+	}
+	
+	/**
+	 * @Title: updateSmsByMobileNoAndCode
+	 * @Description: 修改短信验证内容
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public int updateSmsByMobileNoAndCode(EngineBean pb) throws ExceptionAbstract {
+		log.info("CommunicationFactory updateSmsStusByMobileNoAndCode begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		int rows = SqlUtil.getInstance().updateOne("updateSmsByMobileNoAndCode", headMap);
+		Map<String,Object> bodyMap = new HashMap<String, Object>();
+		if(rows<=0){
+			throw new DatabaseException(this, ErrorConstant.ERROR_PARAM_PARSE_FAIL_10003, "修改短信状态失败");
+		}
+		return rows;
+	}
+	
+	/**
+	 * @Title: addSmsRecord
+	 * @Description: 添加短信记录
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public int addSmsRecord(EngineBean pb) throws ExceptionAbstract {
+		log.info("CommunicationFactory addSmsRecord begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		//lcy-update-20151022 先把这个手机号的验证码置为无效
+		int rows1 = SqlUtil.getInstance().insertOne("updateSmsByMobileNo", headMap);
+		int rows = SqlUtil.getInstance().insertOne("addSmsRecord", headMap);
+		if(rows<=0){
+			throw new DatabaseException(this, ErrorConstant.ERROR_INSERT_DATA_FAIL_10001, "新增短信记录失败");
+		}
+		return rows;
+	}
+	
+	/**
+	 * @Title: querySmsCount
+	 * @Description: 查询短信次数
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public Long querySmsCount(EngineBean pb) throws ExceptionAbstract {
+		log.info("CommunicationFactory querySmsCount begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		Long rows = (Long) SqlUtil.getInstance().selectOneString("querySmsCount", headMap);
+		return rows;
+	}
+	
+	/**
+	 * @Title: addSmsCount
+	 * @Description: 添加短信调用记录
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public int addSmsCount(EngineBean pb) throws ExceptionAbstract {
+		log.info("CommunicationFactory addSmsCount begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		int rows = SqlUtil.getInstance().insertOne("addSmsCount", headMap);
+		if(rows<=0){
+			throw new DatabaseException(this, ErrorConstant.ERROR_INSERT_DATA_FAIL_10001, "新增短信次数失败");
+		}
+		return rows;
+	}
+}

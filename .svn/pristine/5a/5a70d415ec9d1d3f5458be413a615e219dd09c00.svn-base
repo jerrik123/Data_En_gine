@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.registerMapper">
+	<resultMap type="java.util.Map" id="tempList">
+	</resultMap>
+
+	<insert id="registerCreate" parameterType="java.util.Map">
+		INSERT INTO
+		T_MBR_REGISTER
+		(
+		REGISTER_ID,
+		MBR_ID,
+		LOGIN_NICK,
+		LOGIN_NAME,
+		LOGIN_PWD,
+		LOGIN_TYP,
+		REQ_URL,
+		REQ_IP,
+		REMARK,
+		CREATE_TIM,
+		CREATE_BY,
+		UPDATE_TIM,
+		UPDATE_BY,
+		STUS,
+		LOGIN_SUBTYP)
+		VALUES
+		(SEQ_MBR_RGST.NEXTVAL,
+		'${mbrId}',
+		'${loginNick}',
+		'${loginName}',
+		'${loginPwd}',
+		'${loginType}',
+		'${reqUrl}',
+		'${reqIp}',
+		'${remark}',
+		SYSDATE,
+		'${createBy}',
+		SYSDATE,
+		'${updateBy}',
+		1,
+		'${loginSubType}'
+		)
+	</insert>
+	
+	<update id="updateRegister" parameterType="map">
+		update t_mbr_register r 
+		<set>
+			<if test="loginPwd != null">login_pwd = #{loginPwd},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="stus != null">stus = #{stus},</if>
+		</set>
+		,update_tim = sysdate
+		where r.mbr_id =#{mbrId} and r.login_subtyp=#{loginSubType}
+	</update>
+</mapper> 

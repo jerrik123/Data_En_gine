@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.thirdparty.thirdpartyAccountMapper">
+	<resultMap type="java.util.Map" id="tsIntUserMap">
+		<id property="id" column="ID"/>
+		<result property="csn" column="CSN"/>
+		<result property="type" column="TYPE"/>
+		<result property="loginCode" column="LOGIN_CODE"/>
+		<result property="loginName" column="LOGIN_NAME"/>
+		<result property="gendar" column="GENDAR"/>
+		<result property="birthday" column="BIRTHDAY"/>
+		<result property="region" column="REGION"/>
+		<result property="remark" column="REMARK"/>
+		<result property="status" column="STATUS"/>
+		<result property="saftKey" column="SAFTKEY"/>
+	</resultMap>
+
+	<insert id="bindThirdpartyAccount" parameterType="java.util.Map">
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			select
+			seq_mbr_tsintuser.nextval id from dual
+		</selectKey>
+		insert into
+		t_mbr_ts_int_user(ID,CSN,TYPE,LOGIN_CODE,LOGIN_NAME,NICK,GENDAR,BIRTHDAY,REGION,REMARK,STATUS,SAFTKEY)
+		values(#{id},
+		#{mbrId,jdbcType=NUMERIC},
+		#{type,jdbcType=NUMERIC},
+		#{openid,jdbcType=VARCHAR},
+		#{openid,jdbcType=VARCHAR},
+		#{nick,jdbcType=VARCHAR},
+		#{gendar,jdbcType=VARCHAR},
+		#{birthday,jdbcType=DATE},
+		#{region,jdbcType=VARCHAR},
+		#{remark,jdbcType=VARCHAR},
+		1,
+		#{saftkey,jdbcType=VARCHAR})
+	</insert>
+	
+	<select id="queryTsIntUserByOpenid" parameterType="java.util.Map" resultMap="tsIntUserMap">
+		select *
+		from t_mbr_ts_int_user
+		where 
+		login_code=#{openid}
+		and type=#{type}
+		and status=1and rownum=1
+	</select>
+	<select id="queryTsIntUserByCsn" parameterType="java.util.Map" resultMap="tsIntUserMap">
+		select *
+		from t_mbr_ts_int_user
+		where 
+		csn=#{mbrId}
+		and type=#{type}
+		and status=1and rownum=1
+	</select>
+</mapper> 

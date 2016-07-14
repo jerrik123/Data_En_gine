@@ -1,0 +1,10 @@
+package com.mangocity.de.mbr.sqlmapper;
+
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
+
+public interface pointMapper {
+	public Map pointAccountCreate(Map headMap);
+}

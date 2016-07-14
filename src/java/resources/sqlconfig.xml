@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE configuration 
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<properties resource="config/db.properties" />
+	<settings>
+		<!-- changes from the defaults for testing -->
+		<setting name="cacheEnabled" value="false" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="defaultExecutorType" value="REUSE" />
+	</settings>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<!-- <property name="initial_context" value="java:comp/env" /> <property 
+					name="data_source" value="jdbc/mbr" /> -->
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+				<property name="poolMaximumActiveConnections" value="100" />
+				<property name="poolMaximumIdleConnections" value="0" />
+				<property name="poolTimeToWait" value="20000" />
+			</dataSource>
+		</environment>
+		<environment id="development1">
+			<transactionManager type="JDBC">
+			</transactionManager>
+			<dataSource type="POOLED"><!-- POOLED -->
+				<!-- <property name="initial_context" value="java:comp/env" /> <property 
+					name="data_source" value="jdbc/voucher" /> -->
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username.voucher}" />
+				<property name="password" value="${password.voucher}" />
+				<property name="poolMaximumActiveConnections" value="100" />
+				<property name="poolMaximumIdleConnections" value="0" />
+				<property name="poolTimeToWait" value="20000" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<package name="com.mangocity.de.mbr.sqlmapper" />
+	</mappers>
+</configuration> 

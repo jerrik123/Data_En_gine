@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.point.pointAccountMapper">
+	<resultMap type="java.util.Map" id="pointAccountMap">
+		<result property="pointAccountId" column="POINT_ACCOUNT_ID"/>
+		<result property="version" column="VERSION"/>
+		<result property="stus" column="STUS"/>
+		<result property="createBy" column="CREATE_BY"/>
+		<result property="accountCreateDate" column="ACCT_CREATE_DATE"/>
+		<result property="createTime" column="CREATE_TIM"/>
+		<result property="mbrId" column="MBR_ID"/>
+		<result property="pointTotal" column="POINT_TOTAL"/>
+	</resultMap>
+	
+	<resultMap type="java.util.Map" id="pointAccountMap_2">
+		<result property="pointAccountId" column="POINT_ACCOUNT_ID"/>
+		<result property="mbrId" column="MBR_ID"/>
+		<result property="pointTotal" column="POINT_TOTAL"/>
+		<result property="acctCreateDate" column="ACCT_CREATE_DATE"/>
+		<result property="acctExpiryDate" column="ACCT_EXPIRY_DATE"/>
+		<result property="stus" column="STUS"/>
+	</resultMap>
+		
+	<insert id="pointAccountCreate" parameterType="java.util.Map">
+		INSERT INTO T_MBR_POINT_ACCOUNT(
+			POINT_ACCOUNT_ID,
+			MBR_ID,
+			POINT_TOTAL,
+			ACCT_CREATE_DATE,
+			ACCT_EXPIRY_DATE,
+			STUS,
+			VERSION,
+			CREATE_TIM,
+			CREATE_BY,
+			UPDATE_TIM,
+			UPDATE_BY
+			) VALUES(
+			SEQ_MBR_POINT.NEXTVAL,
+			'${mbrId}',
+			'${pointTotal}',
+			SYSDATE,
+			'${acctExpiryDate}',
+			1,
+			1,
+			SYSDATE,
+			'${createBy}',
+			SYSDATE,
+			'${updateBy}'
+			)
+	</insert>
+	
+	<select id="queryPointAccountByMbrId" parameterType="java.util.Map" resultMap="pointAccountMap"> 
+		SELECT *
+		from T_MBR_POINT_ACCOUNT
+		WHERE MBR_ID =#{mbrId}
+	</select>
+	
+	<select id="queryPointBalanceByAccountId" parameterType="java.util.Map" resultType="long">
+		select 
+				sum(tb.point_balance) 
+			from 
+				t_mbr_point_balance tb 
+			where 
+				tb.acct_id = #{accoutId}
+			and 
+				tb.expirydate&gt;=trunc(sysdate)-1 
+			and 
+				tb.stus = 'A'
+	</select>
+	
+	<select id="queryVersionByMbrId" parameterType="java.util.Map" resultType="long">
+		select t.version from t_mbr_point_account t where t.mbr_id=#{mbrId}
+	</select>
+	
+	<update id="updatePointAccoount" parameterType="java.util.Map">
+		UPDATE T_MBR_POINT_ACCOUNT 
+		SET
+		POINT_TOTAL ='${pointTotal}',
+		UPDATE_TIM = SYSDATE,
+		UPDATE_BY = '${updateBy}'
+		WHERE MBR_ID = '${mbrId}'
+	</update>
+	
+	<update id="updatePointBalanceByBalanceId" parameterType="java.util.Map">
+		UPDATE T_MBR_POINT_BALANCE SET
+			POINT_BALANCE ='${pointBalance}',
+			UPDATE_TIM = SYSDATE,
+			UPDATE_BY ='${updateBy}'
+			WHERE POINT_BALANCE_ID = '${pointBalanceId}'
+	</update>
+	
+	<select id="queryUseredPointBalanceByMbrId" parameterType="java.util.Map" resultType="java.util.Map">
+		select  
+			      POINT_BALANCE_ID as "pointBalanceId" ,
+			      ACCT_ID as "acctId",
+			      MBR_ID as "mbrId" ,
+			      POINT_BALANCE as "pointBalance",
+			      EXPIRYDATE as "expiryDate" ,
+			      STUS as "stus",
+			      CREATE_MONTH as "createMonth",
+			      CREATE_TIM as "createTime",
+			      CREATE_BY as "createBy",
+			      UPDATE_TIM as "updateTime",
+     			  UPDATE_BY as "updateBy" 
+      		from 
+      			T_MBR_POINT_BALANCE tb 
+      		where 
+      			tb.expirydate&gt;=trunc(sysdate)-1 and  tb.MBR_ID=#{mbrId}  and  tb.stus = 'A'  and  tb.point_balance&gt;0  order by expirydate
+	</select>
+	
+	<select id="queryPointBalanceOnMonthByMbrId" parameterType="java.util.Map" resultType="java.util.Map">
+		select POINT_BALANCE_ID as "pointBalanceId",
+		ACCT_ID as "accountId",
+		POINT_BALANCE as "pointBalance",
+		EXPIRYDATE as "expirydate",
+		STUS as "stus",
+		CREATE_MONTH as "createMonth",
+		UPDATE_BY as "updateBy"
+		 from T_MBR_POINT_BALANCE T 
+		 where MBR_ID=#{mbrId}  
+		 and EXPIRYDATE !=to_date('29991231','yyyy/mm/dd')  
+		 and  stus = 'A' order by CREATE_MONTH desc
+	</select>
+	
+	<insert id="insertPointBalance" parameterType="java.util.Map">
+		INSERT INTO T_MBR_POINT_BALANCE(
+			POINT_BALANCE_ID ,
+			ACCT_ID ,
+			MBR_ID ,
+			POINT_BALANCE ,
+			EXPIRYDATE ,
+			STUS,
+			CREATE_MONTH,
+			CREATE_TIM,
+			CREATE_BY,
+			UPDATE_TIM,
+			UPDATE_BY
+			) VALUES(
+			SEQ_MBR_POINT.NEXTVAL,
+			'${accountId}',
+			'${mbrId}',
+			'${pointBalance}',
+			to_date('${expirydate}','YYYY-MM-DD'),
+			'${stus}',
+			TRUNC(SYSDATE, 'MM'),
+			sysdate,
+			'${createBy}',
+			sysdate,
+			'${updateBy}'
+			)
+	</insert>
+	
+	<update id="updateVersionByMbrId" parameterType="java.util.Map">
+		update t_mbr_point_account  t set t.version=#{version} where t.mbr_id=#{mbrId}
+	</update>
+	
+	<select id="queryPointTranId" resultType="long">
+		SELECT SEQ_MBR_POINT.NEXTVAL FROM DUAL
+	</select>
+	
+	<insert id="insertPointTransaction" parameterType="java.util.Map">
+		INSERT INTO T_MBR_POINT_TRANSACTION(
+			POINT_TRANSACTION_ID ,
+			ACCT_ID ,
+			TRANS_DATE_TIME ,
+			TRANS_TYPE ,
+			CRM_TRANS_TYPE,
+			MBRSHIP_ID ,
+			MBRSHIP_CD,
+			PRODUCT_ACC_NO ,
+			PRODUCT_ACC_TYPE ,
+			PRODUCT_ACC_LEVEL ,
+			CSN ,
+			TRANS_POINT_VALUE ,
+			BATCH_REF_ID ,
+			BATCH_SOURCE ,
+			BILL_TO_ACC_NO ,
+			POSTING_DATE_TIME ,
+			TRANS_ATTRIBUTE ,
+			TRANS_STATUS ,
+			CREATE_BY,
+			CREATE_TIM,
+			UPDATE_TIM,
+			UPDATE_BY
+			) VALUES(
+			#{pointTransactionId},
+			'${accountId}',
+			SYSDATE,
+			'${transType}',
+			'${crmTransType}',
+			'${mbrshipId}',
+			'${mbrshipCd}',
+			'${productAccNo}',
+			'${productAccType}',
+			'${productAccLevel}',
+			'${csn}',
+			'${transPointValue}',
+			'${batchRefId}',
+			'${batchSource}',
+			'${billToAccNo}',
+			SYSDATE,
+			'${transAttribute}',
+			'${transStatus}',
+			'${createBy}',
+			SYSDATE,
+			SYSDATE,
+			'${updateBy}'
+			)
+	</insert>
+	
+	<insert id="insertPointAdjustment" parameterType="java.util.Map">
+		INSERT INTO T_MBR_POINT_ADJUSTMENT(
+			POINT_ADJUSTMENT_ID ,
+			ADJUST_TYPE ,
+			REF_SALES_TRANS_NO ,
+			ADJUST_REASON_CODE ,
+			ADJUST_REMARKS,
+			CREATE_BY,
+			CREATE_TIM,
+			PRODUCT_CODE
+			) VALUES(
+			'${pointTransactionId}',
+			'${adjustType}',
+			'${refSalesTransNO}',
+			#{adjustReasonCode},
+			'${adjustRemarks}',
+			'${createBy}',
+			#{createTime},
+			'${productCode}'
+			)
+	</insert>
+	
+	<select id="queryPointAccountByCondition" parameterType="java.util.Map" resultMap="pointAccountMap_2">
+		SELECT distinct P.POINT_ACCOUNT_ID,
+			P.MBR_ID,
+			P.POINT_TOTAL,
+			P.ACCT_CREATE_DATE,
+			P.ACCT_EXPIRY_DATE,
+			P.STUS
+			from (select MP.Mobile_No
+			as Mobile_No,
+			MP.Email_Addr as Email_Addr,
+			M.Mbr_Net_Name as
+			Mbr_Net_Name,
+			MS.OLD_MBRSHIP_CD as MBRSHIP_CD,
+			MS.MBRSHIP_ID as MBRSHIP_ID,
+			M.MBR_CD as MBR_CD,
+			M.MBR_ID as MBR_ID
+			from T_MBR_PERSON MP,
+			T_MBR_MBRSHIP
+			MS, T_MBR M
+			where MP.PERSON_ID = M.PERSON_ID
+			and M.MBR_ID
+			= MS.MBR_ID) A,
+			T_MBR_POINT_ACCOUNT P
+			where A.MBR_ID = P.MBR_ID
+			<if test="mobileNo != null">
+				AND A.MOBILE_NO=#{mobileNo}
+			</if>
+			<if test="emailAddr != null">
+				AND A.EMAIL_ADDR=#{emailAddr}
+			</if>
+			<if test="mbrNetName != null">
+				AND A.MBR_NET_NAME=#{mbrNetName}
+			</if>
+			<if test="mbrshipCd != null">
+				AND A.MBRSHIP_CD=#{mbrshipCd}
+			</if>
+			<if test="mbrshipId != null">
+				AND A.Mbrship_Id=#{mbrshipId}
+			</if>
+			<if test="mbrCd != null">
+				AND A.Mbr_Cd=#{mbrCd}
+			</if>
+			<if test="mbrId != null">
+				AND A.Mbr_Id=#{mbrId}
+			</if>
+	</select>
+</mapper> 

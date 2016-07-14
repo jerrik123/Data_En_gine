@@ -1,0 +1,306 @@
+package com.mangocity.de.mbr.datafactory;
+
+import static com.mangocity.ce.util.CommonUtils.isBlank;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.alibaba.fastjson.JSONArray;
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.BusinessException;
+import com.mangocity.ce.exception.DatabaseException;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.ce.util.New;
+import com.mangocity.ce.util.Pinyin4j;
+import com.mangocity.de.mbr.book.ErrorConstant;
+import com.mangocity.de.mbr.book.SqlMapper;
+import com.mangocity.de.mbr.book.SqlMapper.TransacOperation;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+/**
+ * @ClassName: PassengerFactory
+ * @Description: (旅客信息服务)
+ * @author Yangjie
+ * @date 2015年9月8日 下午15:19:22
+ */
+public class PassengerFactory {
+	private static final Logger log = Logger.getLogger(PassengerFactory.class);
+
+	/**
+	 * 增加旅客
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public int addPassengerInfo(EngineBean pb) throws ExceptionAbstract {
+		log.info("PassengerFactory addPassengerInfo begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		//addPassengerInfo；addPassengerCertificateInfo
+		SqlMapper sqlMapper = null;
+		List<SqlMapper> sqlMapperList = new ArrayList<SqlMapper>();	
+		List<Map> passList = (List<Map>) headMap.get("passList");
+		for (Map mappass : passList) {
+			headMap.put("mbrId", mappass.get("MBR_ID"));
+	        Map<String,Object> mbrMap = SqlUtil.getInstance().selectOne("queryMbrByMbrId", headMap);
+	        log.info("会员信息: " + mbrMap);
+	        checkMbrIsValid(mbrMap);
+			String mappassseq = Long.toString((long) SqlUtil.getInstance().selectOneString("getPassId", mappass));
+			mappass.put("PASS_ID", mappassseq);
+			sqlMapper = SqlMapper.getInstance().sqlId("addPassengerInfo").sqlType(TransacOperation.INSERT).paramMap(mappass).build();
+			sqlMapperList.add(sqlMapper);
+			List<Map> certificateList =(List<Map>) mappass.get("certificateList");
+			for (Map certificateMap : certificateList) {
+				certificateMap.put("PASS_ID", mappassseq);
+				sqlMapper = SqlMapper.getInstance().sqlId("addPassengerCertificateInfo").sqlType(TransacOperation.INSERT).paramMap(certificateMap).build();
+				sqlMapperList.add(sqlMapper);
+			}
+		}
+		int row = SqlUtil.getInstance().transactionAll(sqlMapperList);
+		if (row <= 0) {
+			throw new DatabaseException(this,
+					ErrorConstant.ERROR_INSERT_DATA_FAIL_10001, "添加常用旅客失败");
+		}
+		return row;
+	}
+	public Long getPassCountByMbrId(EngineBean pb) throws ExceptionAbstract {
+		log.info("PassengerFactory deletePassengerInfo begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		//验证会员是否有效
+				headMap.put("mbrId", headMap.get("MBR_ID"));
+		        Map<String,Object> mbrMap = SqlUtil.getInstance().selectOne("queryMbrByMbrId", headMap);
+		        log.info("会员信息: " + mbrMap);
+		        checkMbrIsValid(mbrMap);
+		Long count = (Long) SqlUtil.getInstance().selectOneString("getPassCountByMbrId", headMap);
+		return count;
+	}
+	/**
+	 * 删除旅客
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public int deletePassengerInfo(EngineBean pb) throws ExceptionAbstract {
+		log.info("PassengerFactory deletePassengerInfo begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		//验证会员是否有效
+				headMap.put("mbrId", ((List<Map<String,Object>>)(headMap.get("passList"))).get(0).get("MBR_ID"));
+		        Map<String,Object> mbrMap = SqlUtil.getInstance().selectOne("queryMbrByMbrId", headMap);
+		        log.info("会员信息: " + mbrMap);
+		        checkMbrIsValid(mbrMap);
+		//deletePassengerInfo；deletePassengerCertificateInfo
+		SqlMapper sqlMapper = null;
+		List<SqlMapper> sqlMapperList = new ArrayList<SqlMapper>();	
+		
+		sqlMapper = SqlMapper.getInstance().sqlId("deletePassengerInfo").sqlType(TransacOperation.UPDATE).paramMap(headMap).build();
+		sqlMapperList.add(sqlMapper);
+		sqlMapper = SqlMapper.getInstance().sqlId("deletePassengerCertificateInfo").sqlType(TransacOperation.UPDATE).paramMap(headMap).build();
+		sqlMapperList.add(sqlMapper);
+		int row = SqlUtil.getInstance().transactionAll(sqlMapperList);
+		
+		if (row <= 0) {
+			throw new DatabaseException(this,
+					ErrorConstant.ERROR_INSERT_DATA_FAIL_10001, "删除失败");
+		}
+		return row;
+	}
+
+	/**
+	 * 修改旅客
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public int updatePassengerInfo(EngineBean pb) throws ExceptionAbstract {
+		log.info("PassengerFactory updatePassengerInfo begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		List<Map<String,Object>> passList = (List<Map<String,Object>>) headMap.get("passList");
+		Map<String,Object> passMap =  null;
+		SqlMapper sqlMapper = null;
+		List<SqlMapper> sqlMapperList = new ArrayList<SqlMapper>();	
+		for (int i=0,len = passList.size();i<len;i++) {
+			passMap = passList.get(i);
+			headMap.put("mbrId", passMap.get("MBR_ID"));
+	        Map<String,Object> mbrMap = SqlUtil.getInstance().selectOne("queryMbrByMbrId", headMap);
+	        log.info("会员信息: " + mbrMap);
+	        checkMbrIsValid(mbrMap);
+	        //deletePassengerInfo；deletePassengerCertificateInfo
+			sqlMapper = SqlMapper.getInstance().sqlId("deletePassengerInfo").sqlType(TransacOperation.UPDATE).paramMap(passMap).build();
+			sqlMapperList.add(sqlMapper);
+			sqlMapper = SqlMapper.getInstance().sqlId("deletePassengerCertificateInfo").sqlType(TransacOperation.UPDATE).paramMap(passMap).build();
+			sqlMapperList.add(sqlMapper);
+		}
+		for (Map mappass : passList) {
+			String mappassseq = Long.toString((long) SqlUtil.getInstance().selectOneString("getPassId", mappass));
+			mappass.put("PASS_ID", mappassseq);
+			sqlMapper = SqlMapper.getInstance().sqlId("addPassengerInfo").sqlType(TransacOperation.INSERT).paramMap(mappass).build();
+			sqlMapperList.add(sqlMapper);
+			List<Map> certificateList =(List<Map>) mappass.get("certificateList");
+			for (Map certificateMap : certificateList) {
+				certificateMap.put("PASS_ID", mappassseq);
+				sqlMapper = SqlMapper.getInstance().sqlId("addPassengerCertificateInfo").sqlType(TransacOperation.INSERT).paramMap(certificateMap).build();
+				sqlMapperList.add(sqlMapper);
+			}
+		}
+		int row = SqlUtil.getInstance().transactionAll(sqlMapperList);
+		if (row <= 0) {
+			throw new DatabaseException(this,
+					ErrorConstant.ERROR_INSERT_DATA_FAIL_10001, "更新旅客信息失败");
+		}
+		return row;
+	}
+
+	/**
+	 * 查询旅客
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public List<Map<String, Object>> queryPassengerInfo(EngineBean pb)
+			throws ExceptionAbstract {
+		log.info("PassengerFactory queryPassengerInfo begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		//验证会员是否有效
+		headMap.put("mbrId", headMap.get("MBR_ID"));
+        Map<String,Object> mbrMap = SqlUtil.getInstance().selectOne("queryMbrByMbrId", headMap);
+        log.info("会员信息: " + mbrMap);
+        checkMbrIsValid(mbrMap);
+		Long pageNo = CommonUtils.objectToLong((String)pb.getHead("pageNo"), 1L);
+		Long pageSize = CommonUtils.objectToLong((String)pb.getHead("pageSize"), 5L);
+		//如果条数大于1000
+		//总页数
+		//Long countPage = 1L;
+		//if(pageSize>1000){
+			//Long passCount = (Long) SqlUtil.getInstance().selectOneString("getPassCountByMbrId", headMap);
+			//countPage = Math.round(pageSize/1000.0);
+			//pageSize=1000L;
+		//}
+		//Long startNum = (pageNo - 1) * pageSize;
+		//Long endNum = startNum + pageSize;
+		//一页1000条的查询
+		List<Map<String, Object>> totalList = New.list();// 需要接口返回的列表
+		//for (int i = 0; i < countPage; i++) {
+			//Long startNum = pageNo * pageSize;
+		Long startNum = (pageNo - 1) * pageSize;
+			Long endNum = startNum + pageSize;
+			headMap.put("startNum", startNum);
+			headMap.put("endNum", endNum);
+			// #step1:查出所有该会员的旅客信息和对应的证件信息
+			List<Map<String, Object>> passengerList = SqlUtil.getInstance()
+					.selectList("queryPassengerInfo", headMap);
+
+			// #step2:如果该会员对应的所有旅客没有证件信息,则直接返回旅客信息
+			if (null == passengerList || passengerList.size() == 0) {
+				throw new DatabaseException(this,
+						ErrorConstant.ERROR_PARAM_NULL_10000, "该会员没有常用旅客");
+			}
+
+			
+			List<String> passIdList = New.list();
+			for (Map<String, Object> passenerMap : passengerList) {
+				passIdList.add(String.valueOf(passenerMap.get("PASS_ID")));
+			}
+
+			//#step3:查询出指定旅客的所有证件信息
+			Map<String, Object> tMap = New.map();
+			tMap.put("list", passIdList);
+			List<Map<String, Object>> passengerCertificateList = SqlUtil.getInstance().selectList("queryPassengerCertificateInfo", tMap);
+
+			//如果查询出来的证件信息为空,则直接返回旅客信息
+			/*if (null == passengerCertificateList
+					|| passengerCertificateList.size() == 0) {
+				return passengerList;
+			}*/
+
+			// #step4:迭代所有旅客信息和证件信息,过滤一个旅客下的所有的证件新
+			String passId = null;
+			String _passId = null;
+			List<Map<String,Object>> filterList = null;
+			for (Map<String, Object> passenerMap : passengerList) {
+				filterList = New.list();
+				for (Map<String, Object> passengerCertificateMap : passengerCertificateList) {
+					passId = String.valueOf(passenerMap.get("PASS_ID"));
+					_passId = String.valueOf(passengerCertificateMap.get("PASS_ID"));
+					if (isBlank(passId) || isBlank(_passId)) {
+						continue;
+					} else if (passId.equals(_passId)) {// 则把证件信息合并到同一旅客下面
+						filterList.add(passengerCertificateMap);
+					}
+				}
+				passenerMap.put("QUANPIN", Pinyin4j.getPingYin((String) passenerMap.get("CHI_NAME")));
+				passenerMap.put("JIANPIN", Pinyin4j.getPinYinHeadChar((String) passenerMap.get("CHI_NAME")));
+				passenerMap.put("certificateList", filterList);
+				totalList.add(passenerMap);
+			}
+		//}
+		log.info("mbrId: " + headMap.get("MBR_ID") + ",旅客个数: "
+				+ totalList.size());
+		return totalList;
+	}
+	
+	/**
+	 * 根据会员Id和旅客id查询旅客详情信息
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public Map<String,Object> queryPassengerDetailById(EngineBean pb) throws ExceptionAbstract {
+		log.info("PassengerFactory queryPassengerDetailById begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		
+		//#step1: 校验mbr是否有效
+		headMap.put("mbrId", headMap.get("MBR_ID"));
+		Map<String,Object> mbrMap = SqlUtil.getInstance().selectOne("queryMbrByMbrId", headMap);
+	    log.info("会员信息: " + mbrMap);
+	    checkMbrIsValid(mbrMap);
+	    
+	    //#step2: 根据会员id和旅客id查出旅客信息 如果有效且有数据  则查出证件信息 否则抛出错误提示
+		Map<String,Object> passengerDetailMap = SqlUtil.getInstance().selectOne("queryPassengerDetailById", headMap);
+		if(CommonUtils.isEmpty(passengerDetailMap)){
+			throw new BusinessException(this, ErrorConstant.Passenger.ERROR_PASSENGER_IS_NOT_EXIST, "该会员下指定旅客信息不存在");
+		}
+		String status = String.valueOf(passengerDetailMap.get("STATUS"));
+		if(CommonUtils.isNotBlank(status) && status.equals("INVALID")){
+			throw new BusinessException(this, ErrorConstant.Passenger.ERROR_PASSENGER_INVALID, "该旅客信息已失效");
+		}
+		
+		//#step3: 根据旅客id查出证件信息  返回所有信息给客户端
+		List<Map<String,Object>> passengerCertificateList = SqlUtil.getInstance().selectList("queryPassengerCertificateDetailById", headMap);
+		passengerDetailMap.put("certificateList", passengerCertificateList);
+		return passengerDetailMap;
+	}
+	
+	private void checkMbrIsValid(Map<String, Object> mbrMap) throws BusinessException {
+		if(null == mbrMap){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_NOT_EXIST_30001, "该会员不存在");
+		}
+		String stus = String.valueOf(mbrMap.get("stus"));
+		if("CTS_Freeze".equals(stus)||"2".equals(stus)){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_IS_FREEZE_30003, "该会员已冻结");
+		}else if("Cancelled".equals(stus)||"3".equals(stus)){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_IS_LOGOUT_30005, "该会员已注销");
+		}else if("0".equals(stus)){
+			throw new BusinessException(this, ErrorConstant.Mbr.ERROR_MBR_NOT_ACTIVATED_30009, "该会员未激活");
+		}
+	}
+}

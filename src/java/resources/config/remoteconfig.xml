@@ -1,0 +1,8 @@
+<list>
+  <remote-config port="1120" remoteName="NGSREMOTE" automationStart="true" threadNumber="100">
+     <className>com.mangocity.ce.remote.RemoteJavaRMI</className>
+  </remote-config>
+<!--   <remote-config port="1121" remoteName="XNLINTER" automationStart="true" threadNumber="100">
+     <className>com.mangocity.ce.remote.RemoteXMLRMI</className>
+  </remote-config> -->
+</list>

@@ -1,0 +1,48 @@
+package com.mangocity.de.mbr.datafactory.point;
+
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+/**
+ * 积分授权
+ * @author longshu.chen
+ *
+ */
+public class PointAuthFactory {
+	private static final Logger log = Logger.getLogger(PointAuthFactory.class);
+	/**
+	 * 通过mbrid查询授权
+	 * @param map
+	 * @return
+	 */
+	public Map<String,Object> selectPointAuthorizeBymbrId(EngineBean pb)throws ExceptionAbstract{
+		log.info("PointAuthFactory selectPointAuthorizeBymbrId begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		Map<String,Object> pointAuth=SqlUtil.getInstance().selectOne("selectPointAuthorizeBymbrId", headMap);
+		return pointAuth;
+	}
+	
+	/**
+	 * 插入积分授权
+	 * @param map
+	 * @return
+	 */
+	public Integer insertPointAuthorize(EngineBean pb)throws ExceptionAbstract{
+		log.info("PointAuthFactory insertPointAuthorize begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		pb.setHead("id", (long) SqlUtil.getInstance().selectOneString("getPointAuthId", null));
+		pb.setHead("stus", 1);
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		Integer result= (Integer) SqlUtil.getInstance().insertOne("insertPointAuthorize", headMap);
+		return result;
+	}
+}

@@ -1,0 +1,88 @@
+package com.mangocity.de.mbr.sqlmapper;
+
+import java.util.List;
+import java.util.Map;
+
+public interface mbrMapper {
+	/**
+	 * 
+	 * @Title: mbrCreate
+	 * @Description: TODO(插入mbr信息)
+	 * @param  headMap 参数说明
+	 * @return void 返回类型
+	 */
+	public void mbrCreate(Map headMap);
+
+	/**
+	 * @Title:queryMbrByMbrshipCd
+	 * @Description: (根据会籍编码查询会员信息)
+	 * @param  headMap 参数说明
+	 * @return Map 返回类型
+	 */
+	public Map queryMbrByMbrshipCd(Map headMap);
+	
+	/**
+	 * queryMbrIdByLoginNameAndPassword
+	 * @Description: (根据登陆名和密码查询mbrId)
+	 * @param  headMap 参数说明
+	 * @return Map
+	 */
+	public Map queryMbrIdByLoginNameAndPassword(Map headMap);
+	
+	/**
+	 * queryRegisterByLoginNameAndPassword
+	 * @Description: (根据登陆名和密码查询注册信息,任何状态都显示)
+	 * @param  headMap 参数说明
+	 * @return Map
+	 */
+	public List<Map> queryRegisterByLoginNameAndPassword(Map headMap);
+	
+	/**
+	 * queryMbrIdByLoginName
+	 * @Description: (根据登陆名查询mbrId)
+	 * @param  headMap 参数说明
+	 * @return Map
+	 */
+	public Map queryMbrIdByLoginName(Map headMap);
+	
+	/**
+	 * queryMbrByMbrId
+	 * @Description: (根据mbrId查询会员信息)
+	 * @param  headMap 参数说明
+	 * @return Map 
+	 */
+	public Map queryMbrByMbrId(Map headMap);
+	
+	/**
+	 * getSeq12
+	 * @Description: (取得会员编码的12位seq)
+	 * @param
+	 * @return Integer mbrId
+	 */
+	public Long getSeq12();
+	
+	/**
+	* @Title: getMbrId 
+	* @Description: (获得会员id,序列生成) 
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long getMbrId();
+	
+	/**
+	* @Title: validateUniqueMbrByLoginName 
+	* @Description: (验证注册手机或者邮箱是否已经注册) 
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Long validateUniqueMbrByLoginName(Map headMap);
+	
+	/**
+	* @Title: queryMobileNoByMbrId 
+	* @Description: 根据mbrId查询绑定手机 
+	* @param 
+	* @return Long    返回类型
+	 */
+	public Map queryMobileNoByMbrId(Map headMap);
+	
+}

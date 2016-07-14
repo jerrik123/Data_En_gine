@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.expandMapper">
+	<resultMap type="java.util.Map" id="tempList">
+	</resultMap>
+
+	<insert id="addUserDevice" parameterType="map">
+		insert into
+		t_mbr_user_device
+		(
+		id,
+		token ,
+		userId ,
+		deviceId ,
+		brand ,
+		model ,
+		systemVersion ,
+		creenType ,
+		creenX ,
+		creenY ,
+		operator ,
+		networking ,
+		prisonbreak ,
+		datetime ,
+		system_platform ,
+		uids ,
+		sids ,
+		app_version ,
+		jpush_registration_id ,
+		position_province ,
+		position_city ,
+		position_area ,
+		messageState ,
+		messageStateConfirm ,
+		types,
+		create_time,
+		create_by,
+		update_time,
+		update_by
+		)
+		values
+		(
+		SEQ_MBR_USER_DEVICE.nextval,
+		'${token}' ,
+		'${userId}' ,
+		'${deviceId}' ,
+		'${brand}' ,
+		'${model}' ,
+		'${systemVersion}' ,
+		'${creenType}' ,
+		'${creenX}' ,
+		'${creenY}' ,
+		'${operator}' ,
+		'${networking}' ,
+		'${prisonbreak}' ,
+		'${datetime}' ,
+		'${system_platform}' ,
+		'${uids}' ,
+		'${sids}' ,
+		'${app_version}' ,
+		'${jpush_registration_id}' ,
+		'${position_province}' ,
+		'${position_city}' ,
+		'${position_area}' ,
+		'${messageState}' ,
+		'${messageStateConfirm}' ,
+		'${types}',
+		to_char(sysdate,'YYYY-MM-DD HH24:MI:SS'),
+		'MEMBER API',
+		'${update_time}',
+		'${update_by}'
+		)
+	</insert>
+
+	<update id="updateUserDevice" parameterType="map">
+		update t_mbr_user_device
+		<set>
+			<if test="token != null">
+				token = '${token}' ,
+			</if>
+			<if test="userId != null">
+				userId='${userId}' ,
+			</if>
+			<if test="brand != null">
+				brand='${brand}' ,
+			</if>
+			<if test="model != null">
+				model='${model}' ,
+			</if>
+			<if test="systemVersion != null">
+				systemVersion='${systemVersion}' ,
+			</if>
+			<if test="creenType != null">
+				creenType='${creenType}' ,
+			</if>
+			<if test="creenX != null">
+				creenX='${creenX}' ,
+			</if>
+			<if test="creenY != null">
+				creenY='${creenY}' ,
+			</if>
+			<if test="operator != null">
+				operator='${operator}' ,
+			</if>
+			<if test="networking != null">
+				networking='${networking}' ,
+			</if>
+			<if test="prisonbreak != null">
+				prisonbreak='${prisonbreak}' ,
+			</if>
+			<if test="datetime != null">
+				datetime='${datetime}' ,
+			</if>
+			<if test="system_platform != null">
+				system_platform='${system_platform}' ,
+			</if>
+			<if test="uids != null">
+				uids='${uids}' ,
+			</if>
+			<if test="sids != null">
+				sids='${sids}' ,
+			</if>
+			<if test="app_version != null">
+				app_version='${app_version}' ,
+			</if>
+			<if test="jpush_registration_id != null">
+				jpush_registration_id='${jpush_registration_id}' ,
+			</if>
+			<if test="position_province != null">
+				position_province='${position_province}' ,
+			</if>
+			<if test="position_city != null">
+				position_city='${position_city}' ,
+			</if>
+			<if test="position_area != null">
+				position_area='${position_area}' ,
+			</if>
+			<if test="messageState != null">
+				messageState='${messageState}' ,
+			</if>
+			<if test="messageStateConfirm != null">
+				messageStateConfirm='${messageStateConfirm}' ,
+			</if>
+			<if test="types != null">
+				types='${types}'
+			</if>
+			<if test="create_time != null">
+				create_time='${create_time}'
+			</if>
+			<if test="create_by != null">
+				create_by='${create_by}'
+			</if>
+			<if test="update_time != null">
+				update_time=to_char(sysdate,'YYYY-MM-DD HH24:MI:SS')
+			</if>
+			<if test="update_by != null">
+				update_by='MEMBER API'
+			</if>
+		</set>
+		where deviceId='${deviceId}'
+	</update>
+	
+	<!-- types 1:mg -->
+	<select id="queryUserDeviceByUserId" parameterType="map" resultType="map">
+		select USERID as "userId",DEVICEID as "deviceId",SYSTEMVERSION as "systemVersion",NETWORKING as "networking" from t_mbr_user_device where types=1 and  userId=#{userId}
+	</select>
+</mapper> 

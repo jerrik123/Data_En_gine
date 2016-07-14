@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.personMapper">
+	<resultMap type="java.util.Map" id="tempList">
+	</resultMap>
+	<insert id="personCreate" parameterType="java.util.Map">
+		INSERT INTO T_MBR_PERSON
+            	(PERSON_ID,NAME_CN,NAME_EN,FAMILY_NAME,NAME,FIRST_NAME,MIDDLE_NAME,LAST_NAME,AGE,GENDER,BIRTHDAY,NATIONALITY_CD,
+            	RECOMMEND_CD,RECOMMEND_NAME,COUNTRY_CD,DISTRICT_CD,PHONE_NO,BRANCH_NO,OFC_COUNTRY_CD,OFC_DISTRICT_CD,OFC_PHONE_NO,OFC_BRANCH_NO,
+            	FMY_COUNTRY_CD,FMY_DISTRICT_CD,FMY_PHONE_NO,FMY_BRANCH_NO,FAX,MOBILE_COUNTRY_CD,MOBILE_NO,MOBILE,EMAIL_ADDR,QQ_NO,MSN,
+            	ADDR_COUNTRY_CD,ADDR_STATE_CD,ADDR_CITY_CD,ADDR_DETL,ADDR_TYP,ADDR_POST,RACE,PERF_LANG_CD,MARRIAGE_STUS_CD,INDUSTRY_CD,
+            	PERF_CHARACTER_CD,EDUCATION_CD,REVENUE_CD,REGISTER_SRC_ID,POSITION,PROXY_CD,IS_AGREE_SEND_PROMOTION,BIRTH_PLACE,APPELLATION,
+            	RESIDE_CITY,INDUSTRY_STANDARD,UNIT_NAME,CUST_TYP,LIFECYCLE_STUS,DIET_HABIT,SEAT_HABIT,INTERST,PROMOTION_WAY,CERT_TYP_ID,CERT_NO,CRM_IDCARD,ADDR_COUNTY_CD,SRC,CREATE_TIM,CREATE_BY,UPDATE_TIM,UPDATE_BY,TRAVEL_TIMES,TRAVEL_EXPEND
+            ) VALUES (
+            	'${personId}','${nameCn}','${nameEn}','${familyName}','${name}','${firstName}','${middleName}','${lastName}','${age}','${gender}','${birthday}','${nationalityCd}',
+    		 	'${recommendCd}','${recommendName}','${countryCd}','${districtCd}','${phoneNo}','${branchNo}','${ofcCountryCd}','${ofcDistrictCd}','${ofcPhoneNo}','${ofcBranchNo}',
+    		 	'${fmyCountryCd}','${fmyDistrictCd}','${fmyPhoneNo}','${fmyBranchNo}','${fax}','${mobileCountryCd}','${mobileNo}','${mobile}',lower('${emailAddr}'),'${qqNo}','${msn}',
+    		 	'${addrCountryCd}','${addrStateCd}','${addrCityCd}','${addrDetl}','${addrTyp}','${addrPost}','${race}','${perfLangCd}','${marriageStusCd}','${industryCd}',
+    		 	'${perfCharacterCd}','${educationCd}','${revenueCd}','${registerSrcId}','${position}','${proxyCd}','${isAgreeSendPromotion}','${birthPlace}','${appellation}',
+    		 	'${resideCity}','${industryStandard}','${unitName}','${custTyp}','${lifecycleStus}','${dietHabit}','${seatHabit}','${interst}','${promotionWay}','${certTypId}','${certNo}','${crmIdcard}','${addrCountyCd}','${src}',SYSDATE,'${createBy}',SYSDATE,'${updateBy}','${travelTimes}','${travelExpend}'
+    		)   	          
+	</insert>
+	
+	<select id="queryPersonByPersonId" parameterType="java.util.Map" resultType="map">
+		select * from t_mbr_person
+		where 
+		person_id = #{personId} 
+	</select>
+	
+	<select id="getPersonId" resultType="java.lang.Long">
+		SELECT SEQ_MBR_PERSON.NEXTVAL FROM DUAL
+	</select>
+	
+	<update id="updatePersonMobileByMbrId" parameterType="map">
+		update t_mbr_person p set p.mobile_no=#{mobileNo}, 
+		p.mobile=#{mobileNo86} where p.person_id=(select m.person_id from t_mbr m where m.mbr_id=#{mbrId})
+	</update>
+	
+</mapper> 

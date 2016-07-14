@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.point.PointAuthMapper">
+	<select id="getPointAuthId" resultType="java.lang.Long">
+		SELECT SEQ_MBR_POINT_AUTH_ID.NEXTVAL FROM DUAL
+	</select>
+		
+	<insert id="insertPointAuthorize" parameterType="java.util.Map">
+		INSERT INTO T_MBR_POINT_AUTH(
+			ID,
+			AUTHORIZE_ID,
+			MBR_ID,
+			AUTH_TIME,
+			USERNAME,
+			STUS
+			) VALUES(
+			#{id},
+			#{authorizeId},
+			#{mbrId},
+			#{authTime},
+			#{userName},
+			#{stus}
+			)
+	</insert>
+	
+	<select id="selectPointAuthorizeBymbrId" parameterType="java.util.Map" resultType="java.util.Map"> 
+		SELECT *
+		from T_MBR_POINT_AUTH
+		WHERE MBR_ID =#{mbrId} AND STUS = 1
+	</select>
+	
+	<select id="queryPointAuthorizeByCondition" parameterType="java.util.Map" resultType="java.util.Map"> 
+		SELECT *
+		from T_MBR_POINT_AUTH
+		WHERE 1=1
+		<if test="mbr !=null and mbrId != ''">
+			and MBR_ID = #{mbrId}
+		</if>
+		<if test="authorizeId !=null and authorizeId != ''">
+			and AUTHORIZE_ID = #{authorizeId}
+		</if>
+		<if test="userName !=null and userName != ''">
+			and USERNAME = #{userName}
+		</if>
+		<if test="stus !=null and stus != ''">
+			and STUS = #{stus}
+		</if>
+	</select>
+</mapper> 

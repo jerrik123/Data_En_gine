@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.point.pointMapper">
+	<resultMap type="java.util.Map" id="tempList">
+	</resultMap>
+
+	<select id="getSumPaymentByOrderNo" parameterType="map" resultType="long">
+		select abs(sum(t.trans_point_value)) as "trans_point_value"
+		from
+		t_mbr_point_transaction t
+		where t.point_transaction_id in
+		(select
+		t.point_adjustment_id
+		from t_mbr_point_adjustment t
+		where
+		t.ref_sales_trans_no = #{salesTransNO}
+		and t.adjust_reason_code = 1130)
+	</select>
+
+	<select id="getSumRefundByOrderNo" parameterType="map" resultType="long">
+		select sum(t.trans_point_value) as "trans_point_value" from
+		t_mbr_point_transaction t where t.point_transaction_id in
+		(
+		select t.point_adjustment_id from t_mbr_point_adjustment t where
+		t.ref_sales_trans_no=#{salesTransNO} and t.adjust_reason_code=1131
+		)
+	</select>
+</mapper> 

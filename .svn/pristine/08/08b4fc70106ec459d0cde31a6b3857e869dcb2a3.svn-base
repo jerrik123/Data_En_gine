@@ -1,0 +1,161 @@
+package com.mangocity.de.mbr.datafactory;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.DatabaseException;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.ce.util.New;
+import com.mangocity.de.mbr.book.ErrorConstant;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+import static com.mangocity.ce.util.CommonUtils.*;
+
+/**
+ * @ClassName: PassengerFactory
+ * @Description: (旅客信息服务)
+ * @author Yangjie
+ * @date 2015年9月8日 下午15:19:22
+ */
+public class PassengerFactory {
+	private static final Logger log = Logger.getLogger(PassengerFactory.class);
+
+	/**
+	 * 增加旅客
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public int addPassengerInfo(EngineBean pb) throws ExceptionAbstract {
+		log.info("ExpandFactory addPassengerInfo begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		int row = SqlUtil.getInstance().insertOne("addUserDevice", headMap);
+		if (row <= 0) {
+			throw new DatabaseException(this,
+					ErrorConstant.ERROR_INSERT_DATA_FAIL_10001, "新增用户设备信息失败");
+		}
+		return row;
+	}
+
+	/**
+	 * 删除旅客
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public int deletePassengerInfo(EngineBean pb) throws ExceptionAbstract {
+		log.info("ExpandFactory deletePassengerInfo begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		int row = SqlUtil.getInstance().insertOne("addUserDevice", headMap);
+		if (row <= 0) {
+			throw new DatabaseException(this,
+					ErrorConstant.ERROR_INSERT_DATA_FAIL_10001, "新增用户设备信息失败");
+		}
+		return row;
+	}
+
+	/**
+	 * 修改旅客
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public int updatePassengerInfo(EngineBean pb) throws ExceptionAbstract {
+		log.info("ExpandFactory updatePassengerInfo begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		int row = SqlUtil.getInstance().insertOne("addUserDevice", headMap);
+		if (row <= 0) {
+			throw new DatabaseException(this,
+					ErrorConstant.ERROR_INSERT_DATA_FAIL_10001, "新增用户设备信息失败");
+		}
+		return row;
+	}
+
+	/**
+	 * 查询旅客
+	 * 
+	 * @param pb
+	 * @return
+	 * @throws ExceptionAbstract
+	 */
+	public List<Map<String, Object>> queryPassengerInfo(EngineBean pb)
+			throws ExceptionAbstract {
+		log.info("ExpandFactory queryPassengerInfo begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		
+		Long pageNo = CommonUtils.objectToLong((String)pb.getHead("pageNo"), -1L);
+		Long pageSize = CommonUtils.objectToLong((String)pb.getHead("pageSize"), -1L);
+		Long startNum = (pageNo - 1) * pageSize;
+		Long endNum = startNum + pageSize;
+		headMap.put("startNum", startNum);
+		headMap.put("endNum", endNum);
+		// #step1:查出所有该会员的旅客信息和对应的证件信息
+		List<Map<String, Object>> passengerList = SqlUtil.getInstance()
+				.selectList("queryPassengerInfo", headMap);
+
+		// #step2:如果该会员对应的所有旅客没有证件信息,则直接返回旅客信息
+		if (null == passengerList || passengerList.size() == 0) {
+			throw new DatabaseException(this,
+					ErrorConstant.ERROR_PARAM_NULL_10000, "该会员没有常用旅客");
+		}
+
+		List<Map<String, Object>> totalList = New.list();// 需要接口返回的列表
+		List<String> passIdList = New.list();
+		for (Map<String, Object> passenerMap : passengerList) {
+			passIdList.add(String.valueOf(passenerMap.get("PASS_ID")));
+		}
+
+		//#step3:查询出指定旅客的所有证件信息
+		Map<String, Object> tMap = New.map();
+		tMap.put("list", passIdList);
+		List<Map<String, Object>> passengerCertificateList = SqlUtil
+				.getInstance()
+				.selectList("queryPassengerCertificateInfo", tMap);
+
+		//如果查询出来的证件信息为空,则直接返回旅客信息
+		if (null == passengerCertificateList
+				|| passengerCertificateList.size() == 0) {
+			return passengerList;
+		}
+
+		// #step4:迭代所有旅客信息和证件信息,过滤一个旅客下的所有的证件新
+		String passId = null;
+		String _passId = null;
+		List<Map<String,Object>> filterList = null;
+		for (Map<String, Object> passenerMap : passengerList) {
+			filterList = New.list();
+			for (Map<String, Object> passengerCertificateMap : passengerCertificateList) {
+				passId = String.valueOf(passenerMap.get("PASS_ID"));
+				_passId = String.valueOf(passengerCertificateMap.get("PASS_ID"));
+				if (isBlank(passId) || isBlank(_passId)) {
+					continue;
+				} else if (passId.equals(_passId)) {// 则把证件信息合并到同一旅客下面
+					filterList.add(passengerCertificateMap);
+				}
+			}
+			passenerMap.put("certificateList", filterList);
+			totalList.add(passenerMap);
+		}
+
+		log.info("mbrId: " + headMap.get("MBR_ID") + ",旅客个数: "
+				+ totalList.size());
+		return totalList;
+	}
+}

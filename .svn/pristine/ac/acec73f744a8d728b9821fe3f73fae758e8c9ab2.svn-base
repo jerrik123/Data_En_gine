@@ -1,0 +1,183 @@
+package com.mangocity.de.mbr.util;
+
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
+import com.mongodb.client.result.UpdateResult;
+import com.mongodb.util.JSON;
+
+/**
+ * mongoDB工具类
+ * @author longshu.chen
+ *
+ */
+public class MongoDBUtil {
+public static final String host="10.10.152.107";
+	
+	public static final int port=27017;
+	
+	public static final String databaseName="test";
+	
+	public static MongoClient mongoClient=null;
+	
+	public static MongoDatabase mdb=null;
+	
+	static{
+		if (mongoClient == null){
+			mongoClient=new MongoClient(host, port);
+		}
+		mdb=mongoClient.getDatabase(databaseName);
+	}
+	
+	public  static MongoDBUtil getInstance(){
+		return new MongoDBUtil();
+	}
+	
+	/**
+	 * 添加数据
+	 * @param documentName
+	 * @param param
+	 */
+	public void insertOne(String documentName,Map<String,Object> param){
+		MongoCollection<Document> collection=mdb.getCollection(documentName);
+		collection.insertOne(new Document(param));
+	}
+	
+//	public void insertMany(String documentName,List<Map<String,Object>>  paramList){
+//		MongoCollection<Document> collection=mdb.getCollection(documentName);
+//		collection.insertMany((List<? extends Document>) new Document(),new InsertManyOptions());
+//	}
+	
+	/**
+	 * 通过id删除一条数据
+	 * @param documentName
+	 * @param param
+	 * @return
+	 */
+	public Long deleteById(String documentName,String id){
+		MongoCollection<Document> collection=mdb.getCollection(documentName);
+		DeleteResult result=collection.deleteOne(new Document("_id",new ObjectId(id)));
+		return result.getDeletedCount();
+	}
+	
+	/**
+	 * 删除满足条件的多个数据
+	 * @param documentName
+	 * @param param
+	 * @return
+	 */
+	public Long deleteMany(String documentName,Map<String,Object> param){
+		MongoCollection<Document> collection=mdb.getCollection(documentName);
+		DeleteResult result=collection.deleteMany(new Document(param));
+		return result.getDeletedCount();
+	}
+	
+	/**
+	 * 更新满足条件的第一个数据
+	 * @param documentName
+	 * @param param
+	 * @param value
+	 * @return
+	 */
+	public Long updateOne(String documentName,Map<String,Object> param,Map<String,Object> value){
+		MongoCollection<Document> collection=mdb.getCollection(documentName);
+		Document document=new Document();
+		if(value!=null){
+			for (Entry<String, Object> entry : value.entrySet()) {    
+				document.append("$set", new Document(entry.getKey(),entry.getValue()));
+			}  
+		}else{
+			return 0L;
+		}
+		UpdateResult result=collection.updateOne(new Document(param), document);
+		return result.getModifiedCount();
+	}
+	
+	/**
+	 * 更新满足条件的所有数据
+	 * @param documentName
+	 * @param param
+	 * @param value
+	 * @return
+	 */
+	public Long updateMany(String documentName,Map<String,Object> param,Map<String,Object> value){
+		MongoCollection<Document> collection=mdb.getCollection(documentName);
+		Document document=new Document();
+		if(value!=null){
+			for (Entry<String, Object> entry : value.entrySet()) {    
+				document.append("$set", new Document(entry.getKey(),entry.getValue()));
+			}  
+		}else{
+			return 0L;
+		}
+		UpdateResult result=collection.updateMany(new Document(param), document);
+		return result.getModifiedCount();
+	}
+	/**
+	 * 通过Id修改信息
+	 * @param documentName
+	 * @param id
+	 * @param param
+	 * @return
+	 */
+	public Long updateById(String documentName,String id,Map<String,Object> param){
+		MongoCollection<Document> collection=mdb.getCollection(documentName);
+		Document document=new Document();
+		if(param!=null){
+			for (Entry<String, Object> entry : param.entrySet()) {    
+				document.append(entry.getKey(),entry.getValue());
+			}  
+		}else{
+			return 0L;
+		}
+		UpdateResult result=collection.updateMany(new Document("_id",new ObjectId(id)), new Document("$set",document));
+		return result.getModifiedCount();
+	}
+	
+	/**
+	 * 通过Id查询数据
+	 * @param documentName
+	 * @param id
+	 * @return
+	 */
+	public String selectById(String documentName,String id){
+		MongoCollection<Document> collection=mdb.getCollection(documentName);
+		FindIterable<Document> result=collection.find(new Document("_id", new ObjectId(id)));
+		return JSON.serialize(result);
+	}
+	
+	/**
+	 * 通过属性查询数据
+	 * @param documentName
+	 * @param param
+	 * @return
+	 */
+	public String select(String documentName,Map<String,Object> param){
+		MongoCollection<Document> collection=mdb.getCollection(documentName);
+		FindIterable<Document> result=collection.find(new Document(param));
+		String resultStr=JSON.serialize(result);
+		JSONArray jsonArray=(JSONArray) JSONObject.parse(resultStr);
+		JSONArray newJsonArray=new JSONArray();
+		JSONObject json=null;
+		String idStr=null;
+		for (int i = 0; i < jsonArray.size(); i++) {
+			json=(JSONObject) jsonArray.get(i);
+			idStr=(String) ((JSONObject)json.get("_id")).get("$oid");
+			json.remove("_id");
+			json.put("id", idStr);
+			newJsonArray.add(json);
+		}
+		return newJsonArray.toJSONString();
+	}
+	
+}

@@ -1,0 +1,92 @@
+package com.mangocity.de.mbr.datafactory.voucher;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+/**
+ * 
+ * @ClassName: VoucherFactory
+ * @Description: (代金券服务)
+ * @author Yangjie
+ * @date 2015年9月8日 下午15:19:22
+ */
+public class VoucherFactory {
+	private static final Logger log = Logger.getLogger(VoucherFactory.class);
+
+	/**
+	 * @Title: queryNotUsedVoucher
+	 * @Description: 查询未被使用的代金券
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 * "useRules":{
+        "promotionName":"活动名称",
+        "lowestCardLevel":"可用卡级别",
+        "cardType":"发放卡类别",
+        "scope":"适用范围",
+        "usePlatform":"适用平台",
+        "isuntread":"是否可退",
+        "voucherRuleValidPeriods":{//优惠时间说明
+                "type":"",
+                "desc":"",
+                "dateBegin":"",
+                "dateEnd":""
+        }
+        }
+	 */
+	public List<Map<String,Object>> queryNotUsedVoucher(EngineBean pb) throws ExceptionAbstract {
+		log.info("VoucherFactory queryNotUsedVoucher begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		Long pageNo = CommonUtils.objectToLong((String)pb.getHead("pageNo"), -1L);
+		Long pageSize = CommonUtils.objectToLong((String)pb.getHead("pageSize"), -1L);
+		Long startNum = (pageNo - 1) * pageSize;
+		Long endNum = startNum + pageSize;
+		headMap.put("startNum", startNum);
+		headMap.put("endNum", endNum);
+		List<Map<String,Object>> dataList = SqlUtil.getInstance().selectList("voucher_queryNotUsedVoucher", headMap);
+		log.info("queryNotUsedVoucher返回数据: " + dataList);
+		return dataList;
+	}
+	
+	/**
+	 * @Title: queryUsedVoucher
+	 * @Description: 查询已经被使用的代金券
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public List<Map<String,Object>> queryUsedVoucher(EngineBean pb) throws ExceptionAbstract {
+		log.info("VoucherFactory queryUsedVoucher begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		Long pageNo = CommonUtils.objectToLong((String)pb.getHead("pageNo"), -1L);
+		Long pageSize = CommonUtils.objectToLong((String)pb.getHead("pageSize"), -1L);
+		Long startNum = (pageNo - 1) * pageSize;
+		Long endNum = startNum + pageSize;
+		headMap.put("startNum", startNum);
+		headMap.put("endNum", endNum);
+		List<Map<String,Object>> dataList = SqlUtil.getInstance().selectList("voucher_queryUsedVoucher", headMap);
+		log.info("queryUsedVoucher返回数据: " + dataList);
+		return dataList;
+	}
+	public Map queryVoucherBalanceByCd(EngineBean pb) throws ExceptionAbstract {
+		log.info("VoucherFactory queryVoucherBalanceByCd begin()...");
+		Map outMap = new HashMap();
+		log.info("headMap: " + pb.getHeadMap());
+		outMap = SqlUtil.getInstance().selectOne("voucher_queryVoucherBalance", pb.getHeadMap());
+		log.info("queryVoucherBalanceByCd返回数据: " + outMap);
+		return outMap;
+	}
+}

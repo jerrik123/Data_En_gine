@@ -1,0 +1,16 @@
+package com.mangocity.de.mbr.sqlmapper;
+
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
+
+public interface pointAwardMapper {
+	/**
+	 * pointAwardCreate
+	 * @Description: (新增积分奖励)
+	 * @param  headMap 参数说明
+	 * @return int 
+	 */
+	public int pointAwardCreate(Map headMap);
+}

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.communicationMapper">
+	<resultMap id="xx" type="java.util.Map">
+	</resultMap>
+	
+	<select id="validateSms" parameterType="map" resultType="long">
+		SELECT COUNT(1) FROM T_MBR_EMAIL_VALIDATE WHERE MBR_ID=#{mobileNo} AND SIGN_CODE=#{signCode} AND STATUS='VALID' 
+		<![CDATA[ and (to_date(
+				to_char(sysdate,'YYYY-MM-DD HH24:MI:SS'),
+				'YYYY-MM-DD HH24:MI:SS')-
+				to_date(
+				to_char(create_time,'YYYY-MM-DD HH24:MI:SS'),
+				'YYYY-MM-DD HH24:MI:SS'))* 24 * 60 * 60 <=180 ]]>
+	</select>
+	
+	<!-- 过期时间 单位:分钟 -->
+	<select id="validateSmsByCondition" parameterType="map" resultType="map">
+		SELECT status as "status",mbr_id as "mobileNo",create_time as "createTime" FROM T_MBR_EMAIL_VALIDATE WHERE MBR_ID=#{mobileNo} AND SIGN_CODE=#{signCode}
+		<if test="smsStatus != null">AND STATUS=#{smsStatus}</if>  
+		<if test="businessType != null">AND TYPE=#{businessType}</if>
+		<if test="businessNo != null">AND businessNo=#{businessNo}</if>
+		<if test="expireTime != null">
+			<![CDATA[ and (to_date(
+				to_char(sysdate,'YYYY-MM-DD HH24:MI:SS'),
+				'YYYY-MM-DD HH24:MI:SS')-
+				to_date(
+				to_char(create_time,'YYYY-MM-DD HH24:MI:SS'),
+				'YYYY-MM-DD HH24:MI:SS'))* 24 * 60 * 60 <=(60*${expireTime}) ]]>
+		</if>
+	</select>
+	
+	<update id="updateSmsByMobileNoAndCode" parameterType="map">
+		update T_MBR_EMAIL_VALIDATE 
+		<set>
+			<if test="status != null">status = #{status}</if>
+			<if test="updateBy != null">,update_by = #{updateBy}</if>,
+			update_time=sysdate
+		</set>
+		where mbr_Id=#{mobileNo} and sign_code=#{signCode} and status='VALID'
+	</update>
+	<!--  置为无效 -->
+	<update id="updateSmsByMobileNo" parameterType="map">
+		update T_MBR_EMAIL_VALIDATE 
+		<set>
+			status = 'INVALID',
+			update_time=sysdate
+		</set>
+		where mbr_Id=#{mobileNo} and status='VALID'
+	</update>
+	
+	<insert id="addSmsRecord" parameterType="map">
+		insert into t_mbr_email_validate(validate_id,mbr_id,sign_code,status,type,create_by,create_time,update_by,update_time,businessNo,businessSrc,ip,remark)
+		values(
+		SEQ_MBR_EMAIL_VALIDATE_ID.NEXTVAL,
+		${mobileNo},
+		'${signCode}',
+		'${status}',
+		'${type}',
+		'${createBy}',
+		#{createTime,jdbcType=TIMESTAMP},
+		'${updateBy}',
+		#{updateTime,jdbcType=TIMESTAMP},
+		'${businessNo}',
+		'${businessSrc}',
+		'${ip}',
+		'${remark}')
+	</insert>
+	
+	<select id="querySmsCount" parameterType="map" resultType="long">
+		 select count(*)
+			  from t_mbr_sms_counter sms
+		  where sms.mobile = #{mobileNo}
+			   and sms.create_time >= TO_DATE(#{day}, 'YYYY-MM-DD')
+			   and  TO_DATE(#{day}, 'YYYY-MM-DD') >= sms.create_time-1 
+			   and sms.sms_type=#{type}
+			   and sms.STATUS='EFFECTIVE'
+	</select>
+	
+	<insert id="addSmsCount" parameterType="map">
+		 insert into t_mbr_sms_counter
+			  (counter_id,
+			   mobile,
+			   remark,
+			   sms_type,
+			   status,
+			   create_time,
+			   create_by,
+			   update_time,
+			   update_by)
+			values
+			  ( SEQ_MBR_SMS_COUNTER.Nextval,
+			    '${mobileNo}',
+			    '${remark}',
+			    '${smsType}',
+			    '${status}',
+			    #{createTime,jdbcType=TIMESTAMP},
+				'${createBy}',			   
+				#{updateTime,jdbcType=TIMESTAMP},
+				'${updateBy}')
+	</insert>
+	
+	<select id="querySystemDate" resultType="java.util.Date">
+		select sysdate from dual
+	</select>
+</mapper> 

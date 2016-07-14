@@ -1,0 +1,13 @@
+# config path ,default classes path/config
+CONFIG_PATH=
+#file name regex VALIDATION
+SYS_ACTION_REGEX_BOOK=action.+.xml
+SYS_DEPEND_REGEX_BOOK = depend.+.xml
+SYS_REMOTE_REGEX_BOOK = remote.+.xml
+#charset
+CHARSET=UTF-8
+
+#remote bulid config
+REMOTE_BULID_IP_BOOK=172.0.0.1
+REMOTE_BULID_NAMING_BOOK=NSG
+REMTE_BULID_PORT_BOOK=8888

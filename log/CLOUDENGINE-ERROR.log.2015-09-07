@@ -1,0 +1,17 @@
+[Error] 14:23:50,618 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: Expected one result (or null) to be returned by selectOne(), but found: 2,errorTyp: OTHER]
+  [Error] 14:24:47,294 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: Expected one result (or null) to be returned by selectOne(), but found: 2,errorTyp: OTHER]
+  [Error] 14:28:41,822 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: java.lang.UnsupportedOperationException
+### The error may exist in com/mangocity/de/mbr/sqlmapper/pointAccountMapper.xml
+### The error may involve com.mangocity.de.mbr.sqlmapper.pointAccountMapper.queryUseredPointBalanceByMbrId-Inline
+### The error occurred while setting parameters
+### SQL: select            POINT_BALANCE_ID ,          ACCT_ID ,          MBR_ID ,          POINT_BALANCE ,          EXPIRYDATE ,          STUS,          CREATE_MONTH,          CREATE_TIM,          CREATE_BY,          UPDATE_TIM,           UPDATE_BY          from           T_MBR_POINT_BALANCE tb          where           tb.expirydate>=trunc(sysdate)-1 and  tb.MBR_ID=?  and  tb.stus = 'A'  and  tb.point_balance>0  order by expirydate
+### Cause: java.lang.UnsupportedOperationException,errorTyp: OTHER]
+  [Error] 15:51:18,508 ERROR ExceptionAbstract ~ [com.mangocity.de.mbr.util.SqlUtil] [errorCode: E99,errorMsg: 
+### Error querying database.  Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.pointAccountMapper.queryPointTranId'.  It's likely that neither a Result Type nor a Result Map was specified.
+### The error may exist in com/mangocity/de/mbr/sqlmapper/pointAccountMapper.xml
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT SEQ_MBR_POINT.NEXTVAL FROM DUAL
+### Cause: org.apache.ibatis.executor.ExecutorException: A query was run and no Result Maps were found for the Mapped Statement 'com.mangocity.de.mbr.sqlmapper.pointAccountMapper.queryPointTranId'.  It's likely that neither a Result Type nor a Result Map was specified.,errorTyp: OTHER]
+  

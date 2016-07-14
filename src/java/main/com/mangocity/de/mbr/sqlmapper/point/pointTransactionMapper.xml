@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.point.pointTransactionMapper">
+	<resultMap type="java.util.Map" id="pointTransactionMap">
+		<result property="num" column="NUM"/>
+		<result property="transType" column="TRANS_TYPE"/>
+		<result property="transPointValue" column="TRANS_POINT_VALUE"/>
+		<result property="postingDateTime" column="POSTING_DATE_TIME"/>
+		<result property="cTSTransactionOrgCode" column="cTSTransactionOrgCode"/>
+		<result property="transDateTime" column="transDateTime"/>
+		<result property="productCode" column="productCode"/>
+		<result property="salesTransNO" column="salesTransNO"/>
+	</resultMap>
+	
+	<select id="queryPointTransactionByPagination" parameterType="java.util.Map" resultMap="pointTransactionMap">
+		select * from 
+		(select a.*,rownum as num from 
+		(SELECT
+			TRANS_TYPE,
+			TRANS_POINT_VALUE,
+			POSTING_DATE_TIME,
+			salesTransNO,
+			decode(ltrim(rtrim(productCode)),'8866010000','机票','8866020000','酒店','8866030000','邮轮','8866040000','自由行','8866050000','团队游','8866060000','票劵',
+			'8866080000','租车','8866090000','商城','8866100000','保险','8866110000','火车票','8866120000','会议','8866130000','合作伙伴转入积分','8866140000','合作伙伴转出至积分',
+			'8866150000','内部非积分账户转入','8866160000','积分充值卡','8866170000','直接购买积分','8866070000','其他',null,'-') as productCode,
+			nvl(cTSTransactionOrgCode,'-') cTSTransactionOrgCode,
+      		transDateTime
+			FROM (
+			SELECT 
+			TRANS_TYPE,
+			TRANS_POINT_VALUE,
+			POSTING_DATE_TIME,
+			REF_SALES_TRANS_NO as salesTransNO,
+			PRODUCT_CODE as productCode,
+			'' as cTSTransactionOrgCode,
+      		TRANS_DATE_TIME as transDateTime
+			FROM
+			T_MBR_POINT_ADJUSTMENT A,
+			T_MBR_POINT_TRANSACTION T
+			WHERE 
+			A.POINT_ADJUSTMENT_ID=T.POINT_TRANSACTION_ID and T.trans_type &lt;&gt;'F'
+			AND ACCT_ID =( select POINT_ACCOUNT_ID from t_mbr_point_account where mbr_id=#{mbrId})
+			<if test="beginDate != null">
+				AND TRANS_DATE_TIME &gt;= to_date(#{beginDate},'YYYY-MM-DD')
+			</if>
+			<if test="endDate != null">
+				AND to_date(#{endDate},'YYYY-MM-DD') &gt;TRANS_DATE_TIME -1
+			</if>
+      		union all
+      		SELECT 
+			TRANS_TYPE,
+			TRANS_POINT_VALUE,
+			POSTING_DATE_TIME,
+			POINTCARD_ID as salesTransNO,
+			'8866160000' as productCode,
+			'' as cTSTransactionOrgCode,
+      		TRANS_DATE_TIME as transDateTime
+			FROM
+			T_MBR_POINT_Card B,
+			T_MBR_POINT_TRANSACTION T
+			WHERE 
+			B.POINT_TRANSACTION_ID=T.POINT_TRANSACTION_ID 
+			AND ACCT_ID =( select POINT_ACCOUNT_ID from t_mbr_point_account where mbr_id=#{mbrId})
+			<if test="beginDate != null">
+				AND TRANS_DATE_TIME &gt;= to_date(#{beginDate},'YYYY-MM-DD')
+			</if>
+			<if test="endDate != null">
+				AND to_date(#{endDate},'YYYY-MM-DD') &gt;TRANS_DATE_TIME -1
+			</if>
+      		union all
+      		SELECT 
+			TRANS_TYPE,
+			TRANS_POINT_VALUE,
+			POSTING_DATE_TIME,
+			SALES_TRANS_NO as salesTransNO,
+			to_char(SALES_TRANS_CODE) as productCode,
+			to_char(SALES_TRANS_CHANNEL) as cTSTransactionOrgCode,
+      		TRANS_DATE_TIME as transDateTime
+			FROM
+			T_MBR_POINT_AWARD C,
+			T_MBR_POINT_TRANSACTION T
+			WHERE 
+			C.POINT_AWARD_ID=T.POINT_TRANSACTION_ID 
+			AND ACCT_ID =( select POINT_ACCOUNT_ID from t_mbr_point_account where mbr_id=#{mbrId})
+			<if test="beginDate != null">
+				AND TRANS_DATE_TIME &gt;= to_date(#{beginDate},'YYYY-MM-DD')
+			</if>
+			<if test="endDate != null">
+				AND to_date(#{endDate},'YYYY-MM-DD') &gt; TRANS_DATE_TIME -1
+			</if>
+      		) d  order by POSTING_DATE_TIME desc
+      		 )a) b WHERE  num &gt;#{startNum} AND #{endNum} &gt;= num
+	</select>
+	
+	<!-- <insert id="insertPointTransaction" parameterType="map">
+		INSERT INTO T_MBR_POINT_TRANSACTION(
+			POINT_TRANSACTION_ID ,
+			ACCT_ID ,
+			TRANS_DATE_TIME ,
+			TRANS_TYPE ,
+			CRM_TRANS_TYPE,
+			MBRSHIP_ID ,
+			MBRSHIP_CD,
+			PRODUCT_ACC_NO ,
+			PRODUCT_ACC_TYPE ,
+			PRODUCT_ACC_LEVEL ,
+			CSN ,
+			TRANS_POINT_VALUE ,
+			BATCH_REF_ID ,
+			BATCH_SOURCE ,
+			BILL_TO_ACC_NO ,
+			POSTING_DATE_TIME ,
+			TRANS_ATTRIBUTE ,
+			TRANS_STATUS ,
+			CREATE_BY,
+			CREATE_TIM,
+			UPDATE_TIM,
+			UPDATE_BY
+			) VALUES(
+			SEQ_MBR_POINT.Nextval,
+			'${acctId}',
+			SYSDATE,
+			'${transType}',
+			'${crmTransType}',
+			'${mbrshipId}',
+			'${mbrshipCd}',
+			'${productAccNo}',
+			'${productAccType}',
+			'${productAccLevel}',
+			'${csn}',
+			'${transPointValue}',
+			'${batchRefId}',
+			'${batchSource}',
+			'${billToAccNo}',
+			SYSDATE,
+			'${transAttribute}',
+			'${transStatus}',
+			'${createBy}',
+			SYSDATE,
+			SYSDATE,
+			'${updateBy}'
+			)
+	</insert> -->
+</mapper> 

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.personInfoMapper">
+
+	<resultMap type="java.util.Map" id="personInfo">
+		<result property="mbrId" column="MBR_ID" />
+		<result property="mbrCd" column="MBR_CD" />
+		<result property="stus" column="STUS" />
+		<result property="mbrLevel" column="MBR_LEVEL" />
+		<result property="nameCn" column="NAME_CN" />
+		<result property="nameEn" column="NAME_EN" />
+		<result property="age" column="AGE" />
+		<result property="gender" column="GENDER" />
+		<result property="emailAddr" column="EMAIL_ADDR" />
+	</resultMap>
+
+	<select id="getPersonInfo" resultMap="personInfo" parameterType="java.util.Map">
+		SELECT
+		M .MBR_ID,
+		M .MBR_CD,
+		M .STUS,
+		M .MBR_LEVEL,
+		P .NAME_CN,
+		P .NAME_EN,
+		P .AGE,
+		P .EMAIL_ADDR,
+		CASE
+		WHEN P .GENDER = '11' THEN
+		'男'
+		WHEN P .GENDER = '12' THEN
+		'女'
+		ELSE
+		'无'
+		END GENDER
+		FROM
+		T_MBR M
+		JOIN T_MBR_PERSON P ON M .PERSON_ID = P .PERSON_ID
+		WHERE 1=1
+		<if test="mbrCd != null and mbrCd != ''">
+			and M .MBR_CD = #{mbrCd}
+		</if>
+		<if test="mbrId != null and mbrId != ''">
+			and M .MBR_ID = #{mbrId}
+		</if>
+	</select>
+
+</mapper> 

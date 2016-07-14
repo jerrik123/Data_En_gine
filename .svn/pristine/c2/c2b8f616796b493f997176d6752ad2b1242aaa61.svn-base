@@ -1,0 +1,115 @@
+package com.mangocity.de.mbr.datafactory;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.BusinessException;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.de.mbr.book.ErrorConstant;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+/**
+ * 
+ * @ClassName: CashAccountFactory
+ * @Description: (现金账户服务)
+ * @author Yangjie
+ * @date 2015年9月8日 下午15:19:22
+ */
+public class CashAccountFactory {
+	private static final Logger log = Logger.getLogger(CashAccountFactory.class);
+
+	/**
+	 * @Title: queryCashAccountBalance
+	 * @Description: 查询现金账户余额
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public Map<String,Object> queryCashAccountBalance(EngineBean pb) throws ExceptionAbstract {
+		log.info("CashAccountFactory queryCashAccountBalance begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		Map<String,Object> cashAccountMap = SqlUtil.getInstance().selectOne("queryCashAccountByMbrId", headMap);//查询现金账户余额
+		log.info("现金账户 信息: " + cashAccountMap);
+		return cashAccountMap;
+	}
+	
+	/**
+	 * @Title: queryCashAccountInCome
+	 * @Description: 查询现金账户进账
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public List<Map<String,Object>> queryCashAccountInCome(EngineBean pb) throws ExceptionAbstract {
+		log.info("CashAccountFactory queryCashAccountInCome begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		List<Map<String,Object>> dataList = SqlUtil.getInstance().selectList("queryCashAccountInComeByCondition", headMap);
+		return dataList;
+	}
+	
+	/**
+	 * @Title: queryCashAccountOutCome
+	 * @Description: 查询现金账户出账
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public List<Map<String,Object>> queryCashAccountOutCome(EngineBean pb) throws ExceptionAbstract {
+		log.info("CashAccountFactory queryCashAccountOutCome begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		List<Map<String,Object>> dataList = SqlUtil.getInstance().selectList("queryCashAccountOutComeByCondition", headMap);
+		return dataList;
+	}
+	
+	/**
+	 * @Title: queryCashAccountApplyRecord
+	 * @Description: 查询现金账户待出账(申请记录)
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public List<Map<String,Object>> queryCashAccountApplyRecord(EngineBean pb) throws ExceptionAbstract {
+		log.info("CashAccountFactory queryCashAccountApplyRecord begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		List<Map<String,Object>> dataList = SqlUtil.getInstance().selectList("queryCashAccountApplyRecordByCondition", headMap);
+		return dataList;
+	}
+	
+	/**
+	 * @Title: queryAllCashAccountTrans
+	 * @Description: 查询所有现金账户记录(申请、进账、出账)
+	 * @param pb
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 */
+	public List<Map<String,Object>> queryAllCashAccountTrans(EngineBean pb) throws ExceptionAbstract {
+		log.info("CashAccountFactory queryAllCashAccountTrans begin()...");
+		AssertUtils.assertNull(pb, "EngineBean can't be null.");
+		Map<String, Object> headMap = pb.getHeadMap();
+		log.info("headMap: " + headMap);
+		Long pageNo = CommonUtils.objectToLong((String)pb.getHead("pageNo"), -1L);
+		Long pageSize = CommonUtils.objectToLong((String)pb.getHead("pageSize"), -1L);
+		Long startNum = (pageNo - 1) * pageSize;
+		Long endNum = startNum + pageSize;
+		headMap.put("startNum", startNum);
+		headMap.put("endNum", endNum);
+		List<Map<String,Object>> dataList = SqlUtil.getInstance().selectList("queryAllCashAccountTrans", headMap);
+		if(CommonUtils.isEmpty(dataList)){
+			throw new BusinessException(this, ErrorConstant.ERROR_NO_RESULT_DATA, "没有现金账户记录");
+		}
+		return dataList;
+	}
+}

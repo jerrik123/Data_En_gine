@@ -1,0 +1,40 @@
+package com.mangocity.de.mbr.sqlmapper;
+
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Select;
+
+public interface personMapper {
+	/**
+	* @Title: personCreate 
+	* @Description: TODO(插入Person信息) 
+	* @param  headMap  参数说明 
+	* @return void    返回类型
+	 */
+	public void personCreate(Map headMap);
+	
+	/**
+	* @Title: queryPersonByPersonId 
+	* @Description: (根据personId查询person信息) 
+	* @param  headMap  参数说明 
+	* @return void    返回类型
+	 */
+	public Map queryPersonByPersonId(Long personId);
+	
+	/**
+	* @Title: getPersonId 
+	* @Description: (获得personId,序列生成) 
+	* @param
+	* @return Long    id
+	 */
+	public Long getPersonId();
+	
+	/**
+	* @Title: updatePersonMobileByMbrId 
+	* @Description: (根据mbrId更新person手机号信息) 
+	* @param
+	* @return int    
+	 */
+	public int updatePersonMobileByMbrId(Map headMap);
+}

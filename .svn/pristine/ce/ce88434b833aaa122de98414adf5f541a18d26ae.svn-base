@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.mbrManageMapper">
+	<resultMap type="java.util.Map" id="xxx">
+	</resultMap>
+	
+	<select id="queryUserByLoginNameAndPassword" parameterType="map" resultType="map">
+		select u.user_id as "userId",u.user_name as "userName",u.stus as "stus"
+		from 
+		t_mbr_user u 
+		where u.login_name=#{loginName} 
+		and u.login_password=#{loginPassword} 
+		<if test="stus != null">
+		and u.stus=#{stus}
+		</if>
+	</select>
+	<select id="queryModuleByUserId" parameterType="map" resultType="map">
+		select m.module_id,m.parent_id,m.module_name from s_mbr_module m left join t_mbr_user_module um on m.module_id = um.module_id where um.user_id='${userId}'
+	</select>
+</mapper> 

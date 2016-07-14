@@ -1,0 +1,54 @@
+package com.mangocity.de.mbr.datafactory;
+
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.ErrorCode;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.BusinessException;
+import com.mangocity.ce.exception.DatabaseException;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.ce.exception.SystemException;
+import com.mangocity.ce.util.AssertUtils;
+import com.mangocity.ce.util.CommonUtils;
+import com.mangocity.ce.util.MD5Algorithm;
+import com.mangocity.de.mbr.book.ErrorConstant;
+import com.mangocity.de.mbr.util.ConstantArgs;
+import com.mangocity.de.mbr.util.MbrCdUtil;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+/**
+ * 
+ * @ClassName: MbrFactory
+ * @Description: TODO(会籍数据工厂)
+ * @author Syungen
+ * @date 2015年8月25日 下午6:19:22
+ *
+ */
+public class MbrShipFactory {
+	private static final Logger log = Logger.getLogger(MbrShipFactory.class);
+
+	/**
+	 * @Title: MbrRegister
+	 * @Description: TODO(注册会员)
+	 * @param  pb
+	 * @param @return
+	 * @param @throws ExceptionAbstract 参数说明
+	 * @return Map 返回类型
+	 * @throws ParseException 
+	 * @throws NumberFormatException 
+	 */
+	public List queryMbrShipListByMbrid(EngineBean pb) throws ExceptionAbstract {
+		log.info("MbrShipFactory queryMbrShipListByMbrid begin()...");
+		List outList  = SqlUtil.getInstance().selectList("queryMbrShipListByMbrid", pb.getHeadMap());
+		log.info("MbrShipFactory queryMbrShipListByMbrid"+outList);
+		return outList;
+	}
+	
+}

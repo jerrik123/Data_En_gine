@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper 
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mangocity.de.mbr.sqlmapper.registerMapper">
+	<resultMap type="java.util.Map" id="tempList">
+	</resultMap>
+
+	<insert id="registerCreate" parameterType="java.util.Map">
+		INSERT INTO
+		T_MBR_REGISTER
+		(
+		REGISTER_ID,
+		MBR_ID,
+		LOGIN_NICK,
+		LOGIN_NAME,
+		LOGIN_PWD,
+		LOGIN_TYP,
+		REQ_URL,
+		REQ_IP,
+		REMARK,
+		CREATE_TIM,
+		CREATE_BY,
+		UPDATE_TIM,
+		UPDATE_BY,
+		STUS,
+		LOGIN_SUBTYP)
+		VALUES
+		(SEQ_MBR_RGST.NEXTVAL,
+		'${mbrId}',
+		'${loginNick}',
+		'${loginName}',
+		'${loginPwd}',
+		'${loginType}',
+		'${reqUrl}',
+		'${reqIp}',
+		'${remark}',
+		SYSDATE,
+		'${createBy}',
+		SYSDATE,
+		'${updateBy}',
+		1,
+		'${loginSubType}'
+		)
+	</insert>
+
+	<update id="updateRegister" parameterType="map">
+		update t_mbr_register r
+		<set>
+			<if test="loginPwd != null">login_pwd = #{loginPwd},</if>
+			<if test="updateBy != null">update_by = #{updateBy},</if>
+			<if test="stus != null">stus = #{stus},</if>
+		</set>
+		,update_tim = sysdate
+		where r.mbr_id =#{mbrId} and
+		r.login_subtyp=#{loginSubType}
+	</update>
+
+	<select id="queryMbrIdByLoginNameAndPassword" parameterType="java.util.Map"
+		resultType="map">
+		SELECT MBR_ID as "mbrId" FROM T_MBR_REGISTER
+		WHERE
+		LOGIN_NAME = #{loginName}
+		AND LOGIN_PWD = #{loginPwd}
+		AND STUS=1
+	</select>
+
+	<select id="queryRegisterByLoginNameAndPassword" parameterType="java.util.Map"
+		resultType="map">
+		SELECT MBR_ID as "mbrId",
+		LOGIN_NAME as "loginName",
+		LOGIN_PWD as
+		"loginPwd",
+		STUS as "status"
+		FROM T_MBR_REGISTER
+		WHERE 1=1
+		<if test="loginName != null">AND LOGIN_NAME = #{loginName} </if>
+		<if test="loginPwd != null">AND LOGIN_PWD = #{loginPwd}  </if>
+		<if test="loginSubType != null">and login_subTyp = #{loginSubType}</if>
+		<if test="stus != null">and stus = #{stus}</if>
+	</select>
+
+	<select id="queryMbrIdByLoginName" parameterType="java.util.Map"
+		resultType="map">
+		SELECT MBR_ID as "mbrId",stus as "status" FROM
+		T_MBR_REGISTER
+		WHERE
+		LOGIN_NAME = #{loginName}
+	</select>
+
+	<update id="resetPassword" parameterType="map">
+		UPDATE T_MBR_REGISTER
+		<set>
+			<if test="resetLoginPwd != null">LOGIN_PWD=#{resetLoginPwd}</if>
+			<if test="updateBy != null">,UPDATE_BY=#{updateBy}</if>
+			,UPDATE_TIM = SYSDATE
+		</set>
+		<where>
+			<if test="mbrId != null">mbr_id=#{mbrId}</if>
+			<if test="loginName != null">LOGIN_NAME=#{loginName}</if>
+			<if test="oldPassword != null">AND LOGIN_PWD=#{oldPassword}</if>
+			<if test="loginSubType != null">AND LOGIN_SUBTYP=#{loginSubType}</if>
+		</where>
+		AND STUS=1
+	</update>
+
+	<select id="validateUniqueMbrByLoginName" parameterType="map"
+		resultType="java.lang.Long">
+		SELECT count(1) FROM T_MBR_REGISTER WHERE
+		LOGIN_NAME=#{loginName} AND (STUS=1 or STUS=2)
+	</select>
+
+</mapper> 

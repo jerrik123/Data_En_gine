@@ -1,0 +1,13 @@
+package com.mangocity.demo;
+
+import java.util.Map;
+
+import com.mangocity.ce.bean.EngineBean;
+import com.mangocity.ce.exception.ExceptionAbstract;
+import com.mangocity.de.mbr.util.SqlUtil;
+
+public class UserInfoService {
+	public Map getUserInfo(EngineBean pb) throws ExceptionAbstract{
+		return SqlUtil.getInstance().selectOne("getUserInfo", null);
+	}
+}
